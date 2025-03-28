@@ -87,7 +87,7 @@ const SimpleContactForm: React.FC = () => {
       {formStatus === 'error' && (
         <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-200 p-4 rounded-lg">
           <p>{errorMessage}</p>
-          <p className="text-sm mt-2">Alternative: contactez-moi directement à <a href="mailto:quentinleroy62131@outlook.fr" className="underline">quentinleroy62131@outlook.fr</a></p>
+          <p className="text-sm mt-2">Alternative: contactez-moi directement à <a href="mailto:quentinleroy62131@outlook.fr" className="underline">quentinleroy62131@outlook.fr (GitHub bloque les appels d'API. Le formulaire fonctionnera dès que je le mettrai sur un vrai domaine. Merci de votre compréhension.)</a></p>
         </div>
       )}
       
