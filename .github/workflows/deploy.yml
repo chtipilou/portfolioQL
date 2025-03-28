@@ -49,7 +49,7 @@ jobs:
           fi
           
       - name: Build project
-        run: next build
+        run: npm run build
         env:
           NEXT_PUBLIC_SITE_URL: "https://chtipilou.github.io/portfolioQL"
           
