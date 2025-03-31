@@ -1,14 +1,26 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Retirer ou commenter cette ligne pour permettre l'utilisation des API routes
-  // output: 'export',
-  
-  // Autres configurations existantes
+  // Configurations de base communes
   reactStrictMode: true,
   swcMinify: true,
-  images: {
-    unoptimized: true,  // Required for static export
-  },
+  
+  // Configurations conditionnelles selon l'environnement
+  ...(process.env.GITHUB_ACTIONS || process.env.STATIC_EXPORT === 'true'
+    ? {
+        // Configuration pour GitHub Pages ou export statique
+        output: 'export',
+        basePath: '/portfolioQL',
+        images: {
+          unoptimized: true, // Requis pour export statique
+        }
+      }
+    : {
+        // Configuration pour déploiement dynamique (Vercel, serveur Node.js, etc.)
+        // Pas de output:'export' ici pour permettre les API routes
+        images: {
+          domains: ['localhost'],
+        }
+      })
 }
 
 module.exports = nextConfig;
