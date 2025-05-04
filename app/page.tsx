@@ -1,18 +1,177 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import type { NextPage } from 'next';
 import ScrollProgress from './components/ScrollProgress';
 import Navigation from './components/Navigation';
 import LazyBackgroundEffect from './components/LazyBackgroundEffect';
 import SimpleContactForm from './components/SimpleContactForm';
 
+// Définir les types et chemins d'images pour chaque projet
+interface ProjectImage {
+  path: string;
+  title: string;
+}
+
+const nodexssImages: ProjectImage[] = [
+  { path: "/portfolioQL/assets/nodexss/Login.png", title: "Page de connexion - NodeXSS" },
+  { path: "/portfolioQL/assets/nodexss/Register.png", title: "Page d'inscription - NodeXSS" },
+  { path: "/portfolioQL/assets/nodexss/Dashboard.png", title: "Tableau de bord - NodeXSS" },
+  { path: "/portfolioQL/assets/nodexss/AnalyseWeb.png", title: "Analyse Web - NodeXSS" },
+  { path: "/portfolioQL/assets/nodexss/Historique.png", title: "Historique - NodeXSS" },
+  { path: "/portfolioQL/assets/nodexssAlpha.png", title: "Version Alpha - NodeXSS" },
+];
+
+const shareImages: ProjectImage[] = [
+  { path: "/portfolioQL/assets/Share/MenuPrincipale.png", title: "Menu Principal - Share" },
+  { path: "/portfolioQL/assets/Share/ListeCategories.png", title: "Liste des catégories - Share" },
+  { path: "/portfolioQL/assets/Share/ListeDesFichiers.png", title: "Liste des fichiers - Share" },
+  { path: "/portfolioQL/assets/Share/AjouterUnFichier.png", title: "Ajouter un fichier - Share" },
+  { path: "/portfolioQL/assets/Share/PageAdmin.png", title: "Page Admin - Share" },
+  { path: "/portfolioQL/assets/Share/PageContact.png", title: "Page Contact - Share" },
+];
+
+const gsbImages: ProjectImage[] = [
+  { path: "/portfolioQL/assets/gsbextranet/MenuPrincipale.png", title: "Menu Principal - GSBExtranet" },
+  { path: "/portfolioQL/assets/gsbextranet/GererLesProduits.png", title: "Gestion des Produits - GSBExtranet" },
+  { path: "/portfolioQL/assets/gsbextranet/GererLesVisio.png", title: "Gestion des Visioconférences - GSBExtranet" },
+  { path: "/portfolioQL/assets/gsbextranet/GererLesMaintenances.png", title: "Gestion des Maintenances - GSBExtranet" },
+  { path: "/portfolioQL/assets/gsbextranet/LogsOperations.png", title: "Logs des Opérations - GSBExtranet" },
+  { path: "/portfolioQL/assets/gsbextranet/GererMesdonnées.png", title: "Gestion des Données - GSBExtranet" },
+  { path: "/portfolioQL/assets/gsbextranet/Auth2Facteur.png", title: "Auth 2 Facteurs - GSBExtranet" },
+];
+
 const Home: NextPage = () => {
+  // États pour les modaux et les galeries
+  const [showCertModal, setShowCertModal] = useState(false);
+  const [certModalContent, setCertModalContent] = useState({ url: '', type: '', title: '' });
+  
+  // État pour la galerie d'images de projets
+  const [showGallery, setShowGallery] = useState(false);
+  const [currentImages, setCurrentImages] = useState<ProjectImage[]>([]);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  // Fonction pour ouvrir la galerie avec les images du projet spécifié
+  const openGallery = (e: React.MouseEvent, images: ProjectImage[]) => {
+    e.preventDefault();
+    setCurrentImages(images);
+    setCurrentImageIndex(0);
+    setShowGallery(true);
+  };
+
+  // Fonction pour fermer la galerie
+  const closeGallery = () => {
+    setShowGallery(false);
+  };
+
+  // Fonctions pour naviguer entre les images
+  const nextImage = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCurrentImageIndex((prev) => (prev + 1) % currentImages.length);
+  };
+
+  const prevImage = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCurrentImageIndex((prev) => (prev - 1 + currentImages.length) % currentImages.length);
+  };
+  
+  // Fonction d'ouverture du modal de certification
+  const openCertModal = (e: React.MouseEvent, url: string, type: 'pdf' | 'image', title: string) => {
+    e.preventDefault();
+    setCertModalContent({ url, type, title });
+    setShowCertModal(true);
+  };
+
+  // Fonction de fermeture du modal de certification
+  const closeCertModal = () => {
+    setShowCertModal(false);
+  };
+
   return (
     <>
       <LazyBackgroundEffect />
       <Navigation />
       <ScrollProgress />
+      
+      {/* Modal pour la galerie de projets */}
+      {showGallery && currentImages.length > 0 && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm" onClick={closeGallery}>
+          <div className="relative max-w-5xl w-full max-h-[90vh]">
+            <button 
+              className="absolute top-4 right-4 bg-white/90 text-black p-2 rounded-full hover:bg-white z-10"
+              onClick={closeGallery}
+            >
+              ✕
+            </button>
+            <h3 className="absolute top-4 left-4 text-white font-medium bg-black/50 px-4 py-2 rounded-lg">
+              {currentImages[currentImageIndex].title} ({currentImageIndex + 1}/{currentImages.length})
+            </h3>
+            
+            {/* Navigation buttons */}
+            <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
+              <button 
+                onClick={prevImage} 
+                className="bg-white/30 hover:bg-white/50 text-white p-3 rounded-full"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+            </div>
+            
+            <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+              <button 
+                onClick={nextImage} 
+                className="bg-white/30 hover:bg-white/50 text-white p-3 rounded-full"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+            
+            <img 
+              src={currentImages[currentImageIndex].path} 
+              alt={currentImages[currentImageIndex].title} 
+              className="rounded-lg max-h-[85vh] max-w-full mx-auto object-contain"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+        </div>
+      )}
+      
+      {/* Modal pour les certifications */}
+      {showCertModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={closeCertModal}>
+          <div className="relative bg-white dark:bg-gray-800 rounded-xl max-w-4xl max-h-[90vh] w-full overflow-hidden">
+            <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+              <h3 className="font-semibold text-lg">{certModalContent.title}</h3>
+              <button 
+                className="text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-100"
+                onClick={closeCertModal}
+              >
+                ✕
+              </button>
+            </div>
+            <div className="p-1" onClick={(e) => e.stopPropagation()}>
+              {certModalContent.type === 'pdf' ? (
+                <iframe 
+                  src={`${certModalContent.url}#view=FitH`}
+                  className="w-full h-[80vh]"
+                  title={certModalContent.title}
+                ></iframe>
+              ) : (
+                <img 
+                  src={certModalContent.url} 
+                  alt={certModalContent.title}
+                  className="max-h-[80vh] max-w-full mx-auto object-contain"
+                />
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+      
       <article className="max-w-5xl mx-auto px-4 py-8 pt-24">
         {/* Accueil section */}
         <section id="accueil" className="min-h-[80vh] flex flex-col justify-center items-center mb-24">
@@ -25,7 +184,7 @@ const Home: NextPage = () => {
               <span className="text-gray-600 dark:text-gray-300">📍 Bethune - 62400</span>
             </div>
             <div className="flex flex-wrap justify-center gap-6 pt-6">
-              <a href="/Quentin_Leroy_CV.pdf" 
+              <a href="/portfolioQL/Quentin_Leroy_CV.pdf" 
                  className="btn bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-500/20 px-8 py-4 text-lg font-medium rounded-xl">
                 <span className="flex items-center gap-3">
                   📄 Voir mon CV
@@ -70,6 +229,15 @@ const Home: NextPage = () => {
                 Plateforme d'analyse web permettant d'effectuer des tests de sécurité et de la reconnaissance sur des applications web.
               </p>
               <div className="flex items-center gap-4 mt-4">
+                <button 
+                  onClick={(e) => openGallery(e, nodexssImages)}
+                  className="btn bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center gap-2"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  Voir les captures d'écran
+                </button>
                 <a 
                   href="https://nodexss.com" 
                   target="_blank" 
@@ -80,6 +248,7 @@ const Home: NextPage = () => {
                 </a>
               </div>
             </div>
+
             <div className="card p-6 hover:-translate-y-1 transition-transform">
               <div className="flex items-start justify-between mb-4">
                 <h3 className="text-xl font-bold">Share</h3>
@@ -91,7 +260,19 @@ const Home: NextPage = () => {
               <p className="text-gray-600 dark:text-gray-300 mb-4">
                 Projet permettant de drag and drop des fichiers, de les gérer, de créer des comptes et une page admin pour voir et modifier les fichiers.
               </p>
+              <div className="flex items-center gap-4 mt-4">
+                <button 
+                  onClick={(e) => openGallery(e, shareImages)}
+                  className="btn bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center gap-2"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  Voir les captures d'écran
+                </button>
+              </div>
             </div>
+
             <div className="card p-6 hover:-translate-y-1 transition-transform">
               <div className="flex items-start justify-between mb-4">
                 <h3 className="text-xl font-bold">GSBExtranet</h3>
@@ -103,28 +284,188 @@ const Home: NextPage = () => {
               <p className="text-gray-600 dark:text-gray-300 mb-4">
                 Web app médecin en PHP/HTML/CSS qui permet de gérer des visites, visioconférences, produits, et dispose d'un système de maintenance avec logs des opérations, implémentant la méthode CRUD.
               </p>
+              <div className="flex items-center gap-4 mt-4">
+                <button 
+                  onClick={(e) => openGallery(e, gsbImages)}
+                  className="btn bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center gap-2"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  Voir les captures d'écran
+                </button>
+              </div>
             </div>
           </div>
         </section>
 
         <section id="competences" className="card p-8 mb-16">
           <h2 className="section-title">Compétences</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
-              <h3 className="font-bold mb-2">Développement</h3>
-              <ul className="list-disc list-inside">
-                <li>Framework (NextJs, React, vueJS)</li>
-                <li>C#, Python, Html, Css, Javascript, PHP, SQL, PowerShell</li>
-              </ul>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+            {/* Développement frontend */}
+            <div className="p-5 rounded-lg bg-gradient-to-br from-blue-50 to-white dark:from-gray-800 dark:to-gray-900 shadow-sm">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                  <svg className="w-5 h-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                  </svg>
+                </div>
+                <h3 className="font-semibold text-lg">Frontend</h3>
+              </div>
+              <div className="space-y-3">
+                <div>
+                  <div className="flex justify-between mb-1">
+                    <span className="text-sm font-medium">ReactJS / NextJS</span>
+                    <span className="text-xs text-blue-600">Avancé</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700">
+                    <div className="bg-blue-600 h-1.5 rounded-full" style={{ width: '80%' }}></div>
+                  </div>
+                </div>
+                <div>
+                  <div className="flex justify-between mb-1">
+                    <span className="text-sm font-medium">HTML/CSS/JS</span>
+                    <span className="text-xs text-blue-600">Avancé</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700">
+                    <div className="bg-blue-600 h-1.5 rounded-full" style={{ width: '90%' }}></div>
+                  </div>
+                </div>
+                <div>
+                  <div className="flex justify-between mb-1">
+                    <span className="text-sm font-medium">Vue.js</span>
+                    <span className="text-xs text-blue-600">Intermédiaire</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700">
+                    <div className="bg-blue-600 h-1.5 rounded-full" style={{ width: '65%' }}></div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div>
-              <h3 className="font-bold mb-2">Systèmes & Sécurité</h3>
-              <ul className="list-disc list-inside">
-                <li>Cybersécurité (Reverse engineering, XSS, Injection SQL)</li>
-                <li>Masterisation (Linux, Windows)</li>
-              </ul>
+
+            {/* Backend & Base de données */}
+            <div className="p-5 rounded-lg bg-gradient-to-br from-blue-50 to-white dark:from-gray-800 dark:to-gray-900 shadow-sm">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                  <svg className="w-5 h-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
+                  </svg>
+                </div>
+                <h3 className="font-semibold text-lg">Backend & BDD</h3>
+              </div>
+              <div className="space-y-3">
+                <div>
+                  <div className="flex justify-between mb-1">
+                    <span className="text-sm font-medium">PHP</span>
+                    <span className="text-xs text-blue-600">Avancé</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700">
+                    <div className="bg-blue-600 h-1.5 rounded-full" style={{ width: '85%' }}></div>
+                  </div>
+                </div>
+                <div>
+                  <div className="flex justify-between mb-1">
+                    <span className="text-sm font-medium">SQL/MySQL</span>
+                    <span className="text-xs text-blue-600">Avancé</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700">
+                    <div className="bg-blue-600 h-1.5 rounded-full" style={{ width: '85%' }}></div>
+                  </div>
+                </div>
+                <div>
+                  <div className="flex justify-between mb-1">
+                    <span className="text-sm font-medium">C#</span>
+                    <span className="text-xs text-blue-600">Intermédiaire</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700">
+                    <div className="bg-blue-600 h-1.5 rounded-full" style={{ width: '70%' }}></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Cybersécurité */}
+            <div className="p-5 rounded-lg bg-gradient-to-br from-blue-50 to-white dark:from-gray-800 dark:to-gray-900 shadow-sm">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                  <svg className="w-5 h-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                </div>
+                <h3 className="font-semibold text-lg">Cybersécurité</h3>
+              </div>
+              <div className="space-y-3">
+                <div>
+                  <div className="flex justify-between mb-1">
+                    <span className="text-sm font-medium">Tests d'intrusion Web</span>
+                    <span className="text-xs text-blue-600">Avancé</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700">
+                    <div className="bg-blue-600 h-1.5 rounded-full" style={{ width: '90%' }}></div>
+                  </div>
+                </div>
+                <div>
+                  <div className="flex justify-between mb-1">
+                    <span className="text-sm font-medium">Analyse de vulnérabilités</span>
+                    <span className="text-xs text-blue-600">Intermédiaire</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700">
+                    <div className="bg-blue-600 h-1.5 rounded-full" style={{ width: '75%' }}></div>
+                  </div>
+                </div>
+                <div>
+                  <div className="flex justify-between mb-1">
+                    <span className="text-sm font-medium">Reverse Engineering</span>
+                    <span className="text-xs text-blue-600">Intermédiaire</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700">
+                    <div className="bg-blue-600 h-1.5 rounded-full" style={{ width: '50%' }}></div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
+          
+          <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Autres langages */}
+            <div className="p-5 rounded-lg bg-gradient-to-br from-blue-50 to-white dark:from-gray-800 dark:to-gray-900 shadow-sm">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                  <svg className="w-5 h-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <h3 className="font-semibold text-lg">Autres langages</h3>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 rounded-full text-sm">Python</span>
+                <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 rounded-full text-sm">TypeScript</span>
+                <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 rounded-full text-sm">PowerShell</span>
+                <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 rounded-full text-sm">Bash</span>
+              </div>
+            </div>
+            
+            {/* Systèmes */}
+            <div className="p-5 rounded-lg bg-gradient-to-br from-blue-50 to-white dark:from-gray-800 dark:to-gray-900 shadow-sm">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                  <svg className="w-5 h-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <h3 className="font-semibold text-lg">Systèmes & Virtualisation</h3>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 rounded-full text-sm">Linux</span>
+                <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 rounded-full text-sm">Windows Server</span>
+                <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 rounded-full text-sm">Docker</span>
+                <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 rounded-full text-sm">Masterisation</span>
+                <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 rounded-full text-sm">Active Directory</span>
+              </div>
+            </div>
+          </div>
+          
         </section>
 
         {/* Certifications section */}
@@ -136,7 +477,7 @@ const Home: NextPage = () => {
                 <h3 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
                   ANSSI SecNumAcadémie
                 </h3>
-                <span className="px-3 py-1 bg-green-100 text-green-600 rounded-full text-sm">Certifié</span>
+                <span className="px-3 py-1 bg-yellow-100 text-yellow-600 rounded-full text-sm">En cours...</span>
               </div>
               <p className="text-gray-600 dark:text-gray-300">
                 Formation certifiante en cybersécurité délivrée par l'Agence Nationale de la Sécurité des Systèmes d'Information.
@@ -148,12 +489,105 @@ const Home: NextPage = () => {
                 <h3 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
                   Root-Me / CertaPro
                 </h3>
-                <span className="px-3 py-1 bg-purple-100 text-purple-600 rounded-full text-sm">Challenges validés</span>
+                <span className="px-3 py-1 bg-purple-100 text-purple-600 rounded-full text-sm">Challenges validés, Certifié</span>
               </div>
               <p className="text-gray-600 dark:text-gray-300">
                 Plateforme de challenges en cybersécurité avec certification spécifique BTS SIO via CertaPro. 
                 Validation de compétences pratiques en sécurité informatique.
               </p>
+              <div className="mt-4 space-y-2">
+                <a 
+                  href="#"
+                  onClick={(e) => openCertModal(e, "/portfolioQL/assets/certif-proof/root-me/Root-ME1.pdf", "pdf", "Certification Root-Me")}
+                  className="text-blue-600 hover:text-blue-700 flex items-center gap-2"
+                >
+                  <span>📄</span> Voir la certification Root-Me
+                </a>
+                <a 
+                  href="#"
+                  onClick={(e) => openCertModal(e, "/portfolioQL/assets/certif-proof/root-me/root-meClassGlobal.png", "image", "Classement global Root-Me")}
+                  className="text-blue-600 hover:text-blue-700 flex items-center gap-2"
+                >
+                  <span>📊</span> Classement points global
+                </a>
+                <a 
+                  href="#"
+                  onClick={(e) => openCertModal(e, "/portfolioQL/assets/certif-proof/root-me/root-meClassCerta.png", "image", "Classement CertaPro Root-Me")}
+                  className="text-blue-600 hover:text-blue-700 flex items-center gap-2"
+                >
+                  <span>🏆</span> Classement CertaPro
+                </a>
+              </div>
+            </div>
+
+            <div className="card p-6 hover:-translate-y-1 transition-transform">
+              <div className="flex items-start justify-between mb-4">
+                <h3 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
+                  PIX - Compétences Numériques
+                </h3>
+                <span className="px-3 py-1 bg-green-100 text-green-600 rounded-full text-sm">Certifié</span>
+              </div>
+              <p className="text-gray-600 dark:text-gray-300">
+                Certification des compétences numériques reconnue par l'État français.
+              </p>
+              <div className="mt-4 space-y-2">
+                <a 
+                  href="#"
+                  onClick={(e) => openCertModal(e, "/portfolioQL/assets/certif-proof/pix/certification-pix-20250306.pdf", "pdf", "Certification PIX")}
+                  className="text-blue-600 hover:text-blue-700 flex items-center gap-2"
+                >
+                  <span>📄</span> Voir la certification PIX
+                </a>
+              </div>
+            </div>
+
+            <div className="card p-6 hover:-translate-y-1 transition-transform">
+              <div className="flex items-start justify-between mb-4">
+                <h3 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
+                  CNIL - Protection des données
+                </h3>
+                <span className="px-3 py-1 bg-green-100 text-green-600 rounded-full text-sm">Certifié</span>
+              </div>
+              <p className="text-gray-600 dark:text-gray-300">
+                Formation sur la protection des données personnelles et le respect du RGPD délivrée par la Commission Nationale de l'Informatique et des Libertés.
+              </p>
+              <div className="mt-4 space-y-2">
+                <a 
+                  href="#"
+                  onClick={(e) => openCertModal(e, "/portfolioQL/assets/certif-proof/cnil/Module1.pdf", "pdf", "Module 1 - Introduction au RGPD")}
+                  className="text-blue-600 hover:text-blue-700 flex items-center gap-2"
+                >
+                  <span>📚</span> Module 1 - Introduction au RGPD
+                </a>
+                <a 
+                  href="#"
+                  onClick={(e) => openCertModal(e, "/portfolioQL/assets/certif-proof/cnil/Module2.pdf", "pdf", "Module 2 - Principes du RGPD")}
+                  className="text-blue-600 hover:text-blue-700 flex items-center gap-2"
+                >
+                  <span>📚</span> Module 2 - Principes du RGPD
+                </a>
+                <a 
+                  href="#"
+                  onClick={(e) => openCertModal(e, "/portfolioQL/assets/certif-proof/cnil/Module3.pdf", "pdf", "Module 3 - Responsabilités")}
+                  className="text-blue-600 hover:text-blue-700 flex items-center gap-2"
+                >
+                  <span>📚</span> Module 3 - Responsabilités
+                </a>
+                <a 
+                  href="#"
+                  onClick={(e) => openCertModal(e, "/portfolioQL/assets/certif-proof/cnil/Module4.pdf", "pdf", "Module 4 - Droits des personnes")}
+                  className="text-blue-600 hover:text-blue-700 flex items-center gap-2"
+                >
+                  <span>📚</span> Module 4 - Droits des personnes
+                </a>
+                <a 
+                  href="#"
+                  onClick={(e) => openCertModal(e, "/portfolioQL/assets/certif-proof/cnil/Module5.pdf", "pdf", "Module 5 - Sécurité des données")}
+                  className="text-blue-600 hover:text-blue-700 flex items-center gap-2"
+                >
+                  <span>📚</span> Module 5 - Sécurité des données
+                </a>
+              </div>
             </div>
           </div>
         </section>
