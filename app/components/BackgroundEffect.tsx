@@ -26,13 +26,13 @@ const BackgroundEffect = () => {
     if (!ctx) return;
 
     // Configuration
-    const POINT_COUNT = 80; // Maintien du nombre de points
+    const POINT_COUNT = 50; // nb de points
     const CONNECTION_DISTANCE = 200;
     const POINT_SPEED = 3;
     const MOUSE_RADIUS = 250;
-    const FPS_TARGET = 40; // Augmenté à 40 FPS pour plus de fluidité tout en restant optimisé
+    const FPS_TARGET = 40; 
     const FRAME_INTERVAL = 1000 / FPS_TARGET;
-    const RESIZE_THRESHOLD = 100; // Seuil pour la réinitialisation des points
+    const RESIZE_THRESHOLD = 100; 
 
     // Cache des calculs fréquemment utilisés
     let canvasWidth = 0;
@@ -91,7 +91,7 @@ const BackgroundEffect = () => {
 
     // Suit la position de la souris avec throttling modéré
     let lastMouseMoveTime = 0;
-    const MOUSE_THROTTLE = 10; // Réduit à 10ms (~100fps) pour plus de réactivité
+    const MOUSE_THROTTLE = 10;
     
     const handleMouseMove = (e: MouseEvent) => {
       const now = Date.now();
