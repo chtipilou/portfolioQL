@@ -26,11 +26,11 @@ const BackgroundEffect = () => {
     if (!ctx) return;
 
     // Configuration
-    const POINT_COUNT = 80; 
+    const POINT_COUNT = 80; // Maintien du nombre de points
     const CONNECTION_DISTANCE = 200;
     const POINT_SPEED = 3;
     const MOUSE_RADIUS = 250;
-    const FPS_TARGET = 30; // Limiter à 30 FPS pour économiser les ressources
+    const FPS_TARGET = 40; // Augmenté à 40 FPS pour plus de fluidité tout en restant optimisé
     const FRAME_INTERVAL = 1000 / FPS_TARGET;
     const RESIZE_THRESHOLD = 100; // Seuil pour la réinitialisation des points
 
@@ -89,9 +89,9 @@ const BackgroundEffect = () => {
       document.addEventListener('visibilitychange', handleVisibilityChange);
     }
 
-    // Suit la position de la souris avec throttling
+    // Suit la position de la souris avec throttling modéré
     let lastMouseMoveTime = 0;
-    const MOUSE_THROTTLE = 16; // ~60fps
+    const MOUSE_THROTTLE = 10; // Réduit à 10ms (~100fps) pour plus de réactivité
     
     const handleMouseMove = (e: MouseEvent) => {
       const now = Date.now();
@@ -163,6 +163,14 @@ const BackgroundEffect = () => {
           point.vy = (point.vy / speed) * POINT_SPEED;
         }
       });
+      
+      // Dessiner les points eux-mêmes pour les rendre visibles
+      pointsRef.current.forEach((point: Point) => {
+        ctx.beginPath();
+        ctx.arc(point.x, point.y, 2, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(59, 130, 246, 0.8)'; // Bleu plus visible
+        ctx.fill();
+      });
 
       // Dessiner les connexions avec optimisation
       pointsRef.current.forEach((point: Point, i: number) => {
@@ -176,7 +184,8 @@ const BackgroundEffect = () => {
           if (distanceSquared < connectionDistanceSquared) {
             const distance = Math.sqrt(distanceSquared);
             const opacity = 1 - (distance / CONNECTION_DISTANCE);
-            ctx.strokeStyle = `rgba(59, 130, 246, ${opacity * 0.25})`;
+            // Augmentation de l'opacité pour mieux voir les lignes
+            ctx.strokeStyle = `rgba(59, 130, 246, ${opacity * 0.5})`;
             ctx.lineWidth = 1.5;
             ctx.beginPath();
             ctx.moveTo(point.x, point.y);
@@ -189,11 +198,13 @@ const BackgroundEffect = () => {
       frameRef.current = requestAnimationFrame(animate);
     };
 
-    // Initialisation de l'animation
-    lastFrameTimeRef.current = performance.now();
-    frameRef.current = requestAnimationFrame(animate);
-
-    return () => {
+      // Initialisation de l'animation
+      lastFrameTimeRef.current = performance.now();
+      frameRef.current = requestAnimationFrame(animate);
+      
+      // Forcer un rendu initial pour éviter l'écran blanc
+      handleResize();
+      animate(performance.now());    return () => {
       // Nettoyer les événements et l'animation
       if (frameRef.current) {
         cancelAnimationFrame(frameRef.current);
