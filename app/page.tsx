@@ -97,8 +97,8 @@ const Home: NextPage = () => {
       
       {/* Modal pour la galerie de projets */}
       {showGallery && currentImages.length > 0 && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm" onClick={closeGallery}>
-          <div className="relative max-w-5xl w-full max-h-[90vh]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 bg-black/95 backdrop-blur-sm" onClick={closeGallery}>
+          <div className="relative w-full max-w-[95vw] max-h-[95vh] px-2">
             <button 
               className="absolute top-4 right-4 bg-white/90 text-black p-2 rounded-full hover:bg-white z-10"
               onClick={closeGallery}
@@ -132,12 +132,14 @@ const Home: NextPage = () => {
               </button>
             </div>
             
-            <img 
-              src={currentImages[currentImageIndex].path} 
-              alt={currentImages[currentImageIndex].title} 
-              className="rounded-lg max-h-[85vh] max-w-full mx-auto object-contain"
-              onClick={(e) => e.stopPropagation()}
-            />
+            <div className="flex items-center justify-center w-full h-full">
+              <img 
+                src={currentImages[currentImageIndex].path} 
+                alt={currentImages[currentImageIndex].title} 
+                className="rounded-lg max-h-[95vh] max-w-[95vw] w-auto h-auto mx-auto object-contain shadow-lg"
+                onClick={(e) => e.stopPropagation()}
+              />
+            </div>
           </div>
         </div>
       )}

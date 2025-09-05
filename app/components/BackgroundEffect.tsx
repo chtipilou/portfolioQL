@@ -28,27 +28,40 @@ const BackgroundEffect = () => {
     const MOUSE_RADIUS = 200;
 
     const handleResize = () => {
-      const pixelRatio = window.devicePixelRatio || 1;
       const rect = canvas.getBoundingClientRect();
       
-      canvas.width = rect.width * pixelRatio;
-      canvas.height = rect.height * pixelRatio;
-      
-      ctx.scale(pixelRatio, pixelRatio);
+      // Définir la taille du canvas sans pixelRatio pour éviter les problèmes
+      canvas.width = rect.width;
+      canvas.height = rect.height;
       
       canvas.style.width = `${rect.width}px`;
       canvas.style.height = `${rect.height}px`;
       
-      pointsRef.current = Array.from({ length: POINT_COUNT }, () => ({
-        x: Math.random() * rect.width,
-        y: Math.random() * rect.height,
-        vx: (Math.random() - 0.5) * POINT_SPEED,
-        vy: (Math.random() - 0.5) * POINT_SPEED
-      }));
+      // Réinitialiser les points uniquement si le canvas a vraiment changé de taille
+      if (pointsRef.current.length === 0 || 
+          Math.abs(rect.width - (pointsRef.current[0]?.x || 0)) > 100 ||
+          Math.abs(rect.height - (pointsRef.current[0]?.y || 0)) > 100) {
+        pointsRef.current = Array.from({ length: POINT_COUNT }, () => ({
+          x: Math.random() * rect.width,
+          y: Math.random() * rect.height,
+          vx: (Math.random() - 0.5) * POINT_SPEED,
+          vy: (Math.random() - 0.5) * POINT_SPEED
+        }));
+      }
     };
 
     handleResize();
     window.addEventListener('resize', handleResize);
+    
+    // Écouter les changements de zoom
+    let resizeTimeout: NodeJS.Timeout;
+    const handleZoom = () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(handleResize, 100);
+    };
+    
+    window.addEventListener('resize', handleZoom);
+    window.addEventListener('orientationchange', handleZoom);
 
     // Suit la position de la souris
     const handleMouseMove = (e: MouseEvent) => {
@@ -61,7 +74,6 @@ const BackgroundEffect = () => {
 
     // Animation background
     const animate = () => {
-      const pixelRatio = window.devicePixelRatio || 1;
       const rect = canvas.getBoundingClientRect();
       
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -72,8 +84,13 @@ const BackgroundEffect = () => {
         point.x += point.vx;
         point.y += point.vy;
 
-        if (point.x < 0 || point.x > canvas.width) point.vx *= -1;
-        if (point.y < 0 || point.y > canvas.height) point.vy *= -1;
+        // Rebond sur les bords avec la vraie taille du canvas
+        if (point.x < 0 || point.x > rect.width) point.vx *= -1;
+        if (point.y < 0 || point.y > rect.height) point.vy *= -1;
+
+        // Garder les points dans les limites
+        point.x = Math.max(0, Math.min(rect.width, point.x));
+        point.y = Math.max(0, Math.min(rect.height, point.y));
 
         // Réaction à la souris
         const dx = mouseRef.current.x - point.x;
@@ -94,9 +111,7 @@ const BackgroundEffect = () => {
         }
       });
 
-      ctx.beginPath();
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
+      // Dessiner les connexions
       pointsRef.current.forEach((point, i) => {
         pointsRef.current.slice(i + 1).forEach(otherPoint => {
           const dx = point.x - otherPoint.x;
@@ -106,7 +121,7 @@ const BackgroundEffect = () => {
           if (distance < CONNECTION_DISTANCE) {
             const opacity = 1 - (distance / CONNECTION_DISTANCE);
             ctx.strokeStyle = `rgba(59, 130, 246, ${opacity * 0.25})`;
-            ctx.lineWidth = 1.5 / pixelRatio;
+            ctx.lineWidth = 1.5;
             ctx.beginPath();
             ctx.moveTo(point.x, point.y);
             ctx.lineTo(otherPoint.x, otherPoint.y);
@@ -115,10 +130,11 @@ const BackgroundEffect = () => {
         });
       });
 
+      // Dessiner les points
       pointsRef.current.forEach(point => {
         ctx.fillStyle = 'rgba(59, 130, 246, 0.6)'; 
         ctx.beginPath();
-        ctx.arc(point.x, point.y, 2.5 / pixelRatio, 0, Math.PI * 2);
+        ctx.arc(point.x, point.y, 2.5, 0, Math.PI * 2);
         ctx.fill();
       });
 
@@ -129,7 +145,10 @@ const BackgroundEffect = () => {
 
     return () => {
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('resize', handleZoom);
+      window.removeEventListener('orientationchange', handleZoom);
       window.removeEventListener('mousemove', handleMouseMove);
+      clearTimeout(resizeTimeout);
     };
   }, []);
 
