@@ -10,6 +10,8 @@ const nextConfig = {
         // Configuration pour GitHub Pages ou export statique
         output: 'export',
         basePath: '/portfolioQL',
+        assetPrefix: '/portfolioQL/',
+        trailingSlash: true,
         images: {
           unoptimized: true, // Requis pour export statique
         }

@@ -16,10 +16,12 @@ interface ProjectImage {
 const nodexssImages: ProjectImage[] = [
   { path: "/portfolioQL/assets/nodexss/Login.png", title: "Page de connexion - NodeXSS" },
   { path: "/portfolioQL/assets/nodexss/Register.png", title: "Page d'inscription - NodeXSS" },
+  { path: "/portfolioQL/assets/nodexss/Home.png", title: "Page d'accueil - NodeXSS" },
   { path: "/portfolioQL/assets/nodexss/Dashboard.png", title: "Tableau de bord - NodeXSS" },
+  { path: "/portfolioQL/assets/nodexss/Reports.png", title: "Rapports - NodeXSS" },
   { path: "/portfolioQL/assets/nodexss/AnalyseWeb.png", title: "Analyse Web - NodeXSS" },
   { path: "/portfolioQL/assets/nodexss/Historique.png", title: "Historique - NodeXSS" },
-  { path: "/portfolioQL/assets/nodexssAlpha.png", title: "Version Alpha - NodeXSS" },
+  // nodexssAlpha.png removed per request
 ];
 
 const shareImages: ProjectImage[] = [
@@ -155,11 +157,20 @@ const Home: NextPage = () => {
             </div>
             <div className="p-1" onClick={(e) => e.stopPropagation()}>
               {certModalContent.type === 'pdf' ? (
-                <iframe 
-                  src={`${certModalContent.url}#view=FitH`}
-                  className="w-full h-[80vh]"
-                  title={certModalContent.title}
-                ></iframe>
+                <div className="w-full h-[80vh] bg-gray-100 dark:bg-gray-900 rounded-lg overflow-hidden">
+                  <object 
+                    data={`${certModalContent.url}#toolbar=0&navpanes=0&scrollbar=0&view=FitH`}
+                    type="application/pdf"
+                    className="w-full h-full"
+                    title={certModalContent.title}
+                  >
+                    <iframe 
+                      src={`https://docs.google.com/gview?url=${encodeURIComponent(window.location.origin + certModalContent.url)}&embedded=true`}
+                      className="w-full h-full"
+                      title={certModalContent.title}
+                    ></iframe>
+                  </object>
+                </div>
               ) : (
                 <img 
                   src={certModalContent.url} 
@@ -179,15 +190,16 @@ const Home: NextPage = () => {
             <h1 className="text-6xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
               LEROY QUENTIN
             </h1>
-            <p className="text-2xl text-gray-600 dark:text-gray-300">Étudiant BTS SIO SLAM</p>
+            <p className="text-2xl text-gray-600 dark:text-gray-300">Étudiant en recherche d'alternance en informatique</p>
             <div className="flex flex-wrap justify-center gap-6 text-lg">
               <span className="text-gray-600 dark:text-gray-300">📍 Bethune - 62400</span>
             </div>
             <div className="flex flex-wrap justify-center gap-6 pt-6">
               <a href="/portfolioQL/Quentin_Leroy_CV.pdf" 
+                 download="Quentin_Leroy_CV.pdf"
                  className="btn bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-500/20 px-8 py-4 text-lg font-medium rounded-xl">
                 <span className="flex items-center gap-3">
-                  📄 Voir mon CV
+                  📄 Télécharger mon CV
                 </span>
               </a>
               <a href="https://www.linkedin.com/in/quentin-leroy62/"
@@ -253,7 +265,7 @@ const Home: NextPage = () => {
               <div className="flex items-start justify-between mb-4">
                 <h3 className="text-xl font-bold">Share</h3>
                 <div className="flex gap-2">
-                  <span className="px-3 py-1 bg-purple-100 text-purple-600 rounded-full text-sm font-medium">PHP</span>
+                  <span className="px-3 py-1 bg-purple-100 text-purple-600 rounded-full text-sm font-medium">PHP (Symphony)</span>
                   <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">MySQL</span>
                 </div>
               </div>
@@ -498,10 +510,17 @@ const Home: NextPage = () => {
               <div className="mt-4 space-y-2">
                 <a 
                   href="#"
-                  onClick={(e) => openCertModal(e, "/portfolioQL/assets/certif-proof/root-me/Root-ME1.pdf", "pdf", "Certification Root-Me")}
+                  onClick={(e) => openCertModal(e, "/portfolioQL/assets/certif-proof/root-me/Root-ME1.pdf", "pdf", "Certification Root-Me 1")}
                   className="text-blue-600 hover:text-blue-700 flex items-center gap-2"
                 >
-                  <span>📄</span> Voir la certification Root-Me
+                  <span>📄</span> Voir la certification Root-Me 1
+                </a>
+                <a 
+                  href="#"
+                  onClick={(e) => openCertModal(e, "/portfolioQL/assets/certif-proof/root-me/Root-ME2.pdf", "pdf", "Certification Root-Me 2")}
+                  className="text-blue-600 hover:text-blue-700 flex items-center gap-2"
+                >
+                  <span>📄</span> Voir la certification Root-Me 2
                 </a>
                 <a 
                   href="#"
@@ -600,6 +619,18 @@ const Home: NextPage = () => {
               <div className="absolute -left-3 top-1/2 transform -translate-y-1/2 w-6 h-6 bg-blue-600 rounded-full border-4 border-white dark:border-gray-900"></div>
               <div className="ml-6">
                 <h3 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
+                  EPSI - École Privée des Sciences Informatiques
+                </h3>
+                <p className="text-lg text-gray-600 dark:text-gray-400 mt-2">
+                  2025-2026 | Bachelor en Informatique
+                </p>
+              </div>
+            </div>
+
+            <div className="card p-6 relative">
+              <div className="absolute -left-3 top-1/2 transform -translate-y-1/2 w-6 h-6 bg-blue-500 rounded-full border-4 border-white dark:border-gray-900"></div>
+              <div className="ml-6">
+                <h3 className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-blue-400 bg-clip-text text-transparent">
                   BTS SIO SLAM
                 </h3>
                 <p className="text-lg text-gray-600 dark:text-gray-400 mt-2">

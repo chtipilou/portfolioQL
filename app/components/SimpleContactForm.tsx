@@ -26,7 +26,7 @@ const SimpleContactForm: React.FC = () => {
 
     const { name, email, message } = formData;
     
-    // si aucun champ n'est rempli
+    // Si aucun champ n'est rempli
     if (!name || !email || !message) {
       setFormStatus('error');
       setErrorMessage("Tous les champs sont requis");
@@ -34,7 +34,33 @@ const SimpleContactForm: React.FC = () => {
     }
     
     try {
-      // Appel direct à l'API locale
+      // Pour GitHub Pages, nous utilisons un service externe comme Formspree
+      // ou directement un mailto avec les données pré-remplies
+      const isGitHubPages = window.location.hostname.includes('github.io');
+      
+      if (isGitHubPages) {
+        // Pour GitHub Pages : générer un email avec les données
+        const subject = `Message de contact portfolio - ${name}`;
+        const body = `Nom: ${name}%0A` +
+                    `Email: ${email}%0A%0A` +
+                    `Message: ${message}%0A%0A` +
+                    `----%0A` +
+                    `Envoyé depuis le portfolio le ${new Date().toLocaleDateString()}`;
+        
+        const mailtoUrl = `mailto:quentinleroy62131@outlook.fr?subject=${encodeURIComponent(subject)}&body=${body}`;
+        window.open(mailtoUrl);
+        
+        setFormStatus('success');
+        setFormData({ name: '', email: '', message: '' });
+        
+        setTimeout(() => {
+          setFormStatus('idle');
+        }, 5000);
+        
+        return;
+      }
+      
+      // Appel direct à l'API locale pour les déploiements dynamiques
       const response = await fetch('/api/send-mail', {
         method: 'POST',
         headers: {
@@ -55,7 +81,7 @@ const SimpleContactForm: React.FC = () => {
         if (response.status === 429) {
           throw new Error("Limite d'envoi atteinte. Veuillez réessayer plus tard.");
         } else if (response.status === 403) {
-          throw new Error("Accès refusé. Vous avez a été restreint.");
+          throw new Error("Accès refusé. Vous avez été restreint.");
         } else {
           throw new Error(data.message || "Erreur lors de l'envoi");
         }
@@ -80,7 +106,12 @@ const SimpleContactForm: React.FC = () => {
     <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl mx-auto p-8 rounded-xl shadow-lg bg-white/80 dark:bg-gray-800/80">
       {formStatus === 'success' && (
         <div className="bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 text-green-800 dark:text-green-200 p-4 rounded-lg">
-          <p>Message envoyé avec succès! Je le recevrai directement dans ma boîte mail.</p>
+          <p>
+            {window.location.hostname.includes('github.io') 
+              ? "Votre client email va s'ouvrir avec le message pré-rempli. Envoyez-le pour me contacter !" 
+              : "Message envoyé avec succès! Je le recevrai directement dans ma boîte mail."
+            }
+          </p>
         </div>
       )}
       
