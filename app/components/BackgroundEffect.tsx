@@ -26,9 +26,9 @@ const BackgroundEffect = () => {
     if (!ctx) return;
 
     // Configuration
-    const POINT_COUNT = 80; 
-    const CONNECTION_DISTANCE = 200;
-    const POINT_SPEED = 3;
+    const POINT_COUNT = 60; 
+    const CONNECTION_DISTANCE = 150;
+    const POINT_SPEED = 1.5;
     const MOUSE_RADIUS = 250;
     const FPS_TARGET = 30; // Limiter à 30 FPS pour économiser les ressources
     const FRAME_INTERVAL = 1000 / FPS_TARGET;
