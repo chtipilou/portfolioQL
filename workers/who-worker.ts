@@ -177,7 +177,7 @@ export default {
         status: 200,
         headers: { 'content-type': 'application/json' },
       });
-    } else if (url.pathname === '/track' && request.method === 'POST') {
+    } else if (url.pathname === '/ping' && request.method === 'POST') {
       response = await handleTrack(request, env);
     } else if (url.pathname === '/who' && request.method === 'GET') {
       response = await handleWho(request, env);

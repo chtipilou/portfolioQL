@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 
 const buildTrackUrl = (baseUrl: string) => {
-  return new URL('/track', baseUrl).toString();
+  return new URL('/ping', baseUrl).toString();
 };
 
 const sendTrackingBeacon = (url: string, payload: unknown) => {
