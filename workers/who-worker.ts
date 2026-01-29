@@ -1,3 +1,8 @@
+type KVNamespace = {
+  get: (key: string) => Promise<string | null>;
+  put: (key: string, value: string) => Promise<void>;
+};
+
 export interface Env {
   WHO_LOGS: KVNamespace;
   ALLOWED_ORIGINS?: string;
