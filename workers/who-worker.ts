@@ -4,7 +4,7 @@ type KVNamespace = {
 };
 
 export interface Env {
-  WHO_LOGS: KVNamespace;
+  WHO_LOGS?: KVNamespace;
   ALLOWED_ORIGINS?: string;
 }
 
@@ -79,6 +79,10 @@ const getClientIp = (request: Request) => {
 };
 
 const readLogs = async (env: Env) => {
+  if (!env.WHO_LOGS) {
+    return [] as Array<Record<string, unknown>>;
+  }
+
   const raw = await env.WHO_LOGS.get('logs');
   if (!raw) {
     return [] as Array<Record<string, unknown>>;
@@ -93,10 +97,21 @@ const readLogs = async (env: Env) => {
 };
 
 const writeLogs = async (env: Env, logs: Array<Record<string, unknown>>) => {
+  if (!env.WHO_LOGS) {
+    return;
+  }
+
   await env.WHO_LOGS.put('logs', JSON.stringify(logs));
 };
 
 const handleTrack = async (request: Request, env: Env) => {
+  if (!env.WHO_LOGS) {
+    return new Response(JSON.stringify({ ok: false, message: 'KV not configured' }), {
+      status: 202,
+      headers: { 'content-type': 'application/json' },
+    });
+  }
+
   const body = await request.json().catch(() => ({}));
   const ip = getClientIp(request);
   const userAgent = request.headers.get('user-agent') || 'unknown';
