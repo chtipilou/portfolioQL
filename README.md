@@ -8,9 +8,9 @@ Portfolio personnel développé avec Next.js 14 et TypeScript, optimisé pour Gi
 - **Mode sombre/clair** automatique
 - **Galerie d'images** pour les projets
 - **Visualisation des PDFs** intégrée (sauf CV qui se télécharge)
-- **Formulaire de contact** adaptatif (API/mailto selon l'environnement)
-- **Animations fluides** et effets visuels
+- **Animations fluides** et effets visuels légers
 - **Optimisé pour GitHub Pages**
+- **Arrière-plan interactif** (souris + explosion au clic)
 
 ## 🛠️ Technologies
 
@@ -24,11 +24,12 @@ Portfolio personnel développé avec Next.js 14 et TypeScript, optimisé pour Gi
 
 1. **Affichage des PDFs** : Les PDFs s'affichent maintenant dans un modal au lieu de se télécharger (sauf le CV)
 2. **Root-ME2.pdf ajouté** : Nouvelle certification disponible dans la section certifications
-3. **Texte mis à jour** : "Étudiant BTS SIO" → "Étudiant en recherche d'alternance en informatique"
-4. **Formation EPSI 2025-2026** : Ajoutée dans la section formation
-5. **Formulaire de contact GitHub Pages** : Fonctionne avec mailto automatique sur GitHub Pages
-6. **Configuration GitHub Pages** : Optimisée pour le déploiement automatique
-7. **Redirection automatique** : De chtipilou.github.io vers chtipilou.github.io/portfolioQL
+3. **Texte mis à jour** : Recherche d'alternance 2026-2028 en cybersécurité
+4. **Expériences enrichies** : Alternance Groupe Atlantic YGNIS + centre de loisirs
+5. **Compétences refondues** : niveaux /5, outils cyber & SysOps détaillés
+6. **Formation mise à jour** : Bachelor SysOps (EPSI Lille)
+7. **Arrière-plan optimisé** : rendu plus clair, interactions souris et explosion au clic
+8. **Configuration GitHub Pages** : Optimisée pour le déploiement automatique
 
 ## Installation
 
@@ -64,13 +65,15 @@ Le site est automatiquement déployé sur GitHub Pages via GitHub Actions.
 npm run build
 ```
 
+> ⚠️ Next.js nécessite **Node.js >= 20.9** pour le build CI.
+
 ## 🎯 Optimisations GitHub Pages
 
 - **Export statique** : Génération de fichiers HTML/CSS/JS statiques
 - **Chemins absolus** : Configuration basePath pour GitHub Pages
 - **Images non optimisées** : Compatibilité export statique
 - **Suppression API routes** : Automatique lors du build GitHub Pages
-- **Formulaire adaptatif** : Détection environnement pour mailto
+- **Interactions légères** : Animations allégées pour limiter l'usage CPU
 
 ## Structure du projet
 
@@ -78,7 +81,6 @@ npm run build
 app/
 ├── components/           # Composants React
 │   ├── Navigation.tsx   # Navigation principale
-│   ├── SimpleContactForm.tsx  # Formulaire de contact
 │   └── ...
 ├── api/                 # API Routes (uniquement en local)
 │   └── send-mail/
