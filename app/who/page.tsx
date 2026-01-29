@@ -24,7 +24,7 @@ export default function WhoPage() {
     setData(null);
 
     if (!baseUrl) {
-      setError("NEXT_PUBLIC_WHO_BASE_URL n'est pas configuré.");
+      setError("Configuration manquante. Réessaie après la mise à jour du site.");
       return;
     }
 
@@ -58,9 +58,9 @@ export default function WhoPage() {
 
   return (
     <div className="min-h-[80vh] max-w-3xl mx-auto px-4 py-16">
-      <h1 className="text-3xl font-bold mb-6">Journal des visites</h1>
+      <h1 className="text-3xl font-bold mb-6">Accès sécurisé</h1>
       <p className="text-gray-600 dark:text-gray-300 mb-8">
-        Entrez le mot de passe pour afficher les logs.
+        Entrez le mot de passe pour continuer.
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -78,7 +78,7 @@ export default function WhoPage() {
           disabled={loading}
           className="btn bg-blue-600 text-white hover:bg-blue-700 px-6 py-3 rounded-lg"
         >
-          {loading ? 'Chargement...' : 'Afficher les logs'}
+          {loading ? 'Chargement...' : 'Valider'}
         </button>
       </form>
 

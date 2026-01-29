@@ -48,6 +48,7 @@ jobs:
         run: npm run build
         env:
           NEXT_PUBLIC_SITE_URL: "https://chtipilou.github.io/portfolioQL"
+          NEXT_PUBLIC_WHO_BASE_URL: ${{ secrets.WHO_BASE_URL }}
           
       - name: Setup Pages
         uses: actions/configure-pages@v4
