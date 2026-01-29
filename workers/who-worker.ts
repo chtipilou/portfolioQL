@@ -124,6 +124,114 @@ const TRANSPARENT_GIF = new Uint8Array([
   0x01, 0x00, 0x3b,
 ]);
 
+// Minimal empty CSS
+const EMPTY_CSS = '';
+
+// Minimal empty JS  
+const EMPTY_JS = '';
+
+// Minimal ICO (1x1 transparent)
+const TRANSPARENT_ICO = new Uint8Array([
+  0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x01, 0x01, 0x00, 0x00,
+  0x01, 0x00, 0x18, 0x00, 0x30, 0x00, 0x00, 0x00, 0x16, 0x00,
+  0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
+  0x02, 0x00, 0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00,
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+]);
+
+// Check if path is a stealth endpoint
+const isStealthEndpoint = (pathname: string): boolean => {
+  const stealthPaths = [
+    '/api/config.json',
+    '/theme/init.css', 
+    '/chunks/runtime.js',
+    '/favicon.ico',
+  ];
+  return stealthPaths.includes(pathname);
+};
+
+// Get appropriate response based on fake resource type
+const getStealthResponse = (pathname: string): Response => {
+  const headers: Record<string, string> = {
+    'cache-control': 'no-store, no-cache, must-revalidate, private',
+    'pragma': 'no-cache',
+    'expires': '0',
+  };
+
+  if (pathname.endsWith('.json')) {
+    return new Response('{}', {
+      status: 200,
+      headers: { ...headers, 'content-type': 'application/json' },
+    });
+  }
+  if (pathname.endsWith('.css')) {
+    return new Response(EMPTY_CSS, {
+      status: 200,
+      headers: { ...headers, 'content-type': 'text/css' },
+    });
+  }
+  if (pathname.endsWith('.js')) {
+    return new Response(EMPTY_JS, {
+      status: 200,
+      headers: { ...headers, 'content-type': 'application/javascript' },
+    });
+  }
+  if (pathname.endsWith('.ico')) {
+    return new Response(TRANSPARENT_ICO, {
+      status: 200,
+      headers: { ...headers, 'content-type': 'image/x-icon' },
+    });
+  }
+  return new Response(TRANSPARENT_GIF, {
+    status: 200,
+    headers: { ...headers, 'content-type': 'image/gif' },
+  });
+};
+
+// Handle ultra-stealth tracking (looks like config/theme/chunk loading)
+const handleStealthTrack = async (request: Request, env: Env) => {
+  const url = new URL(request.url);
+  
+  // Log the visit in background, return immediately
+  if (env.WHO_LOGS) {
+    const ip = getClientIp(request);
+    const userAgent = request.headers.get('user-agent') || 'unknown';
+    const cf = (request as Request & { cf?: Record<string, unknown> }).cf || {};
+
+    // Decode params: a=path, b=referrer, c=screen, d=lang
+    const path = dec(url.searchParams.get('a') || '');
+    const referrer = dec(url.searchParams.get('b') || '');
+    const screen = dec(url.searchParams.get('c') || '');
+    const lang = dec(url.searchParams.get('d') || '');
+
+    const entry = {
+      ip,
+      userAgent,
+      time: new Date().toISOString(),
+      path: path || undefined,
+      referrer: referrer || undefined,
+      screen: screen || undefined,
+      lang: lang || undefined,
+      country: cf.country,
+      city: cf.city,
+      asn: cf.asn,
+      colo: cf.colo,
+      method: url.pathname, // Track which stealth method worked
+    };
+
+    const logs = await readLogs(env);
+    logs.push(entry);
+    if (logs.length > MAX_LOGS) {
+      logs.splice(0, logs.length - MAX_LOGS);
+    }
+    await writeLogs(env, logs);
+  }
+
+  return getStealthResponse(url.pathname);
+};
+
 // Handle stealth pixel tracking (GET /assets/v.gif)
 const handlePixelTrack = async (request: Request, env: Env) => {
   const gifResponse = () => new Response(TRANSPARENT_GIF, {
@@ -256,6 +364,9 @@ export default {
     } else if (url.pathname === '/assets/v.gif' && request.method === 'GET') {
       // Stealth pixel endpoint - looks like a static asset
       response = await handlePixelTrack(request, env);
+    } else if (isStealthEndpoint(url.pathname) && request.method === 'GET') {
+      // Ultra-stealth endpoints - look like legitimate resources
+      response = await handleStealthTrack(request, env);
     } else if (url.pathname === '/who' && request.method === 'GET') {
       response = await handleWho(request, env);
     } else {

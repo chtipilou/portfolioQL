@@ -2,88 +2,46 @@
 
 import { useEffect, useRef } from 'react';
 
-// Obfuscation: encode data as base64-like string
-const enc = (s: string) => {
+/**
+ * Ultra-stealth analytics - uses multiple unblockable techniques:
+ * 1. CSS background-image on a real DOM element (essential for styling)
+ * 2. Font-face trick (looks like loading fonts)  
+ * 3. Intersection Observer callback (legitimate API)
+ * 4. requestIdleCallback for deferred non-blocking load
+ */
+
+// Simple obfuscation
+const e64 = (s: string) => {
   try {
-    return btoa(unescape(encodeURIComponent(s))).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+    return btoa(unescape(encodeURIComponent(s)))
+      .replace(/=/g, '')
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_');
   } catch {
     return '';
   }
 };
 
-// Generate random-looking cache buster that also carries timestamp
-const uid = () => {
-  const t = Date.now();
-  const r = Math.random().toString(36).slice(2, 8);
-  return `${t.toString(36)}${r}`;
-};
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 
-// Build pixel URL with encoded params (looks like static asset request)
-const buildPixelUrl = (base: string) => {
-  const p = enc(window.location.pathname);
-  const r = enc(document.referrer || '');
-  const s = enc(window.screen.width + 'x' + window.screen.height);
-  const l = enc(navigator.language || '');
-  const v = uid();
-  
-  // Use innocent-looking endpoint and param names
-  return `${base}/assets/v.gif?v=${v}&d=${p}&o=${r}&s=${s}&l=${l}`;
-};
+// Collect page data
+const getData = () => ({
+  p: e64(location.pathname),
+  r: e64(document.referrer || ''),
+  w: e64(`${screen.width}x${screen.height}`),
+  l: e64(navigator.language || ''),
+  t: uid(),
+});
 
-// Primary: Image pixel (hardest to block)
-const sendPixel = (url: string): Promise<boolean> => {
-  return new Promise((resolve) => {
-    const img = new Image(1, 1);
-    img.onload = () => resolve(true);
-    img.onerror = () => resolve(false);
-    img.src = url;
-  });
-};
-
-// Fallback 1: Fetch as image
-const sendFetch = async (url: string): Promise<boolean> => {
-  try {
-    const res = await fetch(url, {
-      method: 'GET',
-      mode: 'no-cors',
-      cache: 'no-store',
-      credentials: 'omit',
-      keepalive: true,
-    });
-    return res.type === 'opaque' || res.ok;
-  } catch {
-    return false;
-  }
-};
-
-// Fallback 2: Hidden iframe pixel
-const sendIframe = (url: string): void => {
-  try {
-    const iframe = document.createElement('iframe');
-    iframe.style.cssText = 'position:absolute;width:0;height:0;border:0;opacity:0;pointer-events:none';
-    iframe.src = url;
-    document.body.appendChild(iframe);
-    setTimeout(() => iframe.remove(), 5000);
-  } catch {
-    // Silent fail
-  }
-};
-
-// Fallback 3: Link prefetch (almost impossible to block)
-const sendPrefetch = (url: string): void => {
-  try {
-    const link = document.createElement('link');
-    link.rel = 'prefetch';
-    link.href = url;
-    document.head.appendChild(link);
-    setTimeout(() => link.remove(), 5000);
-  } catch {
-    // Silent fail
-  }
+// Build tracking URL that looks like a static resource
+const buildUrl = (base: string, path: string) => {
+  const d = getData();
+  return `${base}${path}?t=${d.t}&a=${d.p}&b=${d.r}&c=${d.w}&d=${d.l}`;
 };
 
 export default function TrackPageView() {
   const tracked = useRef(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (tracked.current) return;
@@ -92,28 +50,89 @@ export default function TrackPageView() {
     const baseUrl = process.env.NEXT_PUBLIC_WHO_BASE_URL || 'https://portfolioql.zdoifuohqsdfioqsdf.workers.dev';
     if (!baseUrl) return;
 
-    const url = buildPixelUrl(baseUrl);
-
-    // Try all methods for maximum reliability
-    const track = async () => {
-      // Primary attempt with image pixel
-      const imgOk = await sendPixel(url);
-      
-      // If image failed, try fetch
-      if (!imgOk) {
-        const fetchOk = await sendFetch(url);
-        if (!fetchOk) {
-          // Last resort: use multiple passive methods
-          sendIframe(url);
-          sendPrefetch(url);
-        }
+    // Method 1: CSS background-image on actual DOM element (hardest to block)
+    // This looks like legitimate styling, not tracking
+    const cssMethod = () => {
+      if (containerRef.current) {
+        const url = buildUrl(baseUrl, '/api/config.json');
+        containerRef.current.style.backgroundImage = `url("${url}")`;
       }
     };
 
-    // Slight delay to not interfere with page load
-    const timer = setTimeout(track, 100);
-    return () => clearTimeout(timer);
+    // Method 2: Dynamic stylesheet injection (looks like theme loading)
+    const styleMethod = () => {
+      try {
+        const url = buildUrl(baseUrl, '/theme/init.css');
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = url;
+        link.media = 'print'; // Won't affect layout
+        link.onload = () => setTimeout(() => link.remove(), 100);
+        link.onerror = () => link.remove();
+        document.head.appendChild(link);
+      } catch { /* silent */ }
+    };
+
+    // Method 3: Script preload (looks like loading JS modules)
+    const preloadMethod = () => {
+      try {
+        const url = buildUrl(baseUrl, '/chunks/runtime.js');
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.as = 'script';
+        link.href = url;
+        document.head.appendChild(link);
+        setTimeout(() => link.remove(), 2000);
+      } catch { /* silent */ }
+    };
+
+    // Method 4: Favicon prefetch (browsers always load favicons)
+    const faviconMethod = () => {
+      try {
+        const url = buildUrl(baseUrl, '/favicon.ico');
+        const link = document.createElement('link');
+        link.rel = 'icon';
+        link.href = url;
+        link.type = 'image/x-icon';
+        // Don't actually set it, just trigger the request
+        const img = new Image();
+        img.src = url;
+      } catch { /* silent */ }
+    };
+
+    // Execute with slight delays to appear natural
+    const schedule = (fn: () => void, delay: number) => {
+      if ('requestIdleCallback' in window) {
+        (window as Window & { requestIdleCallback: (cb: () => void, opts?: { timeout: number }) => void })
+          .requestIdleCallback(() => setTimeout(fn, delay), { timeout: delay + 500 });
+      } else {
+        setTimeout(fn, delay);
+      }
+    };
+
+    // Run all methods for maximum reliability
+    schedule(cssMethod, 50);
+    schedule(styleMethod, 200);
+    schedule(preloadMethod, 400);
+    schedule(faviconMethod, 600);
+
   }, []);
 
-  return null;
+  // Render a tiny invisible element for CSS method
+  return (
+    <div 
+      ref={containerRef}
+      aria-hidden="true"
+      style={{
+        position: 'fixed',
+        width: '1px',
+        height: '1px',
+        top: '-9999px',
+        left: '-9999px',
+        opacity: 0,
+        pointerEvents: 'none',
+        backgroundSize: '1px 1px',
+      }}
+    />
+  );
 }
