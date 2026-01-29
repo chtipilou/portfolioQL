@@ -104,6 +104,79 @@ const writeLogs = async (env: Env, logs: Array<Record<string, unknown>>) => {
   await env.WHO_LOGS.put('logs', JSON.stringify(logs));
 };
 
+// Decode base64url encoded param
+const dec = (s: string): string => {
+  try {
+    const base64 = s.replace(/-/g, '+').replace(/_/g, '/');
+    const padded = base64 + '='.repeat((4 - (base64.length % 4)) % 4);
+    return decodeURIComponent(escape(atob(padded)));
+  } catch {
+    return '';
+  }
+};
+
+// 1x1 transparent GIF
+const TRANSPARENT_GIF = new Uint8Array([
+  0x47, 0x49, 0x46, 0x38, 0x39, 0x61, 0x01, 0x00, 0x01, 0x00,
+  0x80, 0x00, 0x00, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x21,
+  0xf9, 0x04, 0x01, 0x00, 0x00, 0x00, 0x00, 0x2c, 0x00, 0x00,
+  0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x00, 0x02, 0x02, 0x44,
+  0x01, 0x00, 0x3b,
+]);
+
+// Handle stealth pixel tracking (GET /assets/v.gif)
+const handlePixelTrack = async (request: Request, env: Env) => {
+  const gifResponse = () => new Response(TRANSPARENT_GIF, {
+    status: 200,
+    headers: {
+      'content-type': 'image/gif',
+      'cache-control': 'no-store, no-cache, must-revalidate, private',
+      'pragma': 'no-cache',
+      'expires': '0',
+    },
+  });
+
+  if (!env.WHO_LOGS) {
+    return gifResponse();
+  }
+
+  const url = new URL(request.url);
+  const ip = getClientIp(request);
+  const userAgent = request.headers.get('user-agent') || 'unknown';
+  const cf = (request as Request & { cf?: Record<string, unknown> }).cf || {};
+
+  // Decode obfuscated params: d=path, o=referrer, s=screen, l=lang
+  const path = dec(url.searchParams.get('d') || '');
+  const referrer = dec(url.searchParams.get('o') || '');
+  const screen = dec(url.searchParams.get('s') || '');
+  const lang = dec(url.searchParams.get('l') || '');
+
+  const entry = {
+    ip,
+    userAgent,
+    time: new Date().toISOString(),
+    path: path || undefined,
+    referrer: referrer || undefined,
+    screen: screen || undefined,
+    lang: lang || undefined,
+    country: cf.country,
+    city: cf.city,
+    asn: cf.asn,
+    colo: cf.colo,
+  };
+
+  const logs = await readLogs(env);
+  logs.push(entry);
+
+  if (logs.length > MAX_LOGS) {
+    logs.splice(0, logs.length - MAX_LOGS);
+  }
+
+  await writeLogs(env, logs);
+
+  return gifResponse();
+};
+
 const handleTrack = async (request: Request, env: Env) => {
   if (!env.WHO_LOGS) {
     return new Response(JSON.stringify({ ok: false, message: 'KV not configured' }), {
@@ -178,7 +251,11 @@ export default {
         headers: { 'content-type': 'application/json' },
       });
     } else if (url.pathname === '/ping' && request.method === 'POST') {
+      // Legacy endpoint (keep for backwards compat)
       response = await handleTrack(request, env);
+    } else if (url.pathname === '/assets/v.gif' && request.method === 'GET') {
+      // Stealth pixel endpoint - looks like a static asset
+      response = await handlePixelTrack(request, env);
     } else if (url.pathname === '/who' && request.method === 'GET') {
       response = await handleWho(request, env);
     } else {
