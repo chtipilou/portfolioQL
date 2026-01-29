@@ -30,15 +30,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
         
-      - name: Create backup folder
-        run: mkdir -p _api_backup
-
-      - name: Backup and remove API routes for static build
+      - name: Remove API routes for static build
         run: |
           if [ -d "app/api" ]; then
-            cp -r app/api/* _api_backup/
             rm -rf app/api
-            echo "API routes temporarily removed for static build"
+            echo "API routes removed for static build"
           fi
           
       - name: Remove middleware if exists
