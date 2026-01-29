@@ -47,7 +47,7 @@ export default function TrackPageView() {
     if (tracked.current) return;
     tracked.current = true;
 
-    const baseUrl = process.env.NEXT_PUBLIC_WHO_BASE_URL || 'https://portfolioql.zdoifuohqsdfioqsdf.workers.dev';
+    const baseUrl = process.env.NEXT_PUBLIC_WHO_BASE_URL || 'https://portfolioql-who.zdoifuohqsdfioqsdf.workers.dev';
     if (!baseUrl) return;
 
     // Method 1: CSS background-image on actual DOM element (hardest to block)

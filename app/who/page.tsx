@@ -66,7 +66,7 @@ export default function WhoPage() {
   const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<WhoResponse | null>(null);
 
-  const baseUrl = process.env.NEXT_PUBLIC_WHO_BASE_URL || 'https://portfolioql.zdoifuohqsdfioqsdf.workers.dev';
+  const baseUrl = process.env.NEXT_PUBLIC_WHO_BASE_URL || 'https://portfolioql-who.zdoifuohqsdfioqsdf.workers.dev';
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
