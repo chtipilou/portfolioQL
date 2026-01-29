@@ -74,8 +74,7 @@ export default function ScrollProgress() {
     { id: 'competences', label: 'Compétences' },
     { id: 'certifications', label: 'Certifications' },
     { id: 'formation', label: 'Formation' },
-    { id: 'experience', label: 'Expérience' },
-    { id: 'contact', label: 'Contact' }
+    { id: 'experience', label: 'Expérience' }
   ];
 
   return (

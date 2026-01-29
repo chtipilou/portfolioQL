@@ -2,7 +2,7 @@
 const nextConfig = {
   // Configurations de base communes
   reactStrictMode: true,
-  swcMinify: true,
+  
   
   // Configurations conditionnelles selon l'environnement
   ...(process.env.GITHUB_ACTIONS || process.env.STATIC_EXPORT === 'true'

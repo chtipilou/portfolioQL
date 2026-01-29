@@ -1,0 +1,11 @@
+{
+	"name": "portfolioql-who",
+	"compatibility_date": "2026-01-29",
+	"main": "workers/who-worker.ts",
+	"kv_namespaces": [
+		{
+			"binding": "WHO_LOGS",
+			"id": "352b1a7783a040f19eaae59538a348c0"
+		}
+	]
+}

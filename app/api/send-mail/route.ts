@@ -73,7 +73,7 @@ const sanitizeHtml = (text: string): string => {
 
 export async function POST(req: Request) {
   try {
-    const headersList = headers();
+    const headersList = await headers();
     const forwardedFor = headersList.get('x-forwarded-for');
     const realIp = headersList.get('x-real-ip');
     const cfConnectingIp = headersList.get('cf-connecting-ip');
