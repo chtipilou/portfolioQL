@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from 'next/font/google';
 import Navigation from './components/Navigation';
 import ScrollProgress from './components/ScrollProgress';
+import TrackPageView from './components/TrackPageView';
 import "./globals.css";
 import Script from 'next/script';
 
@@ -39,6 +40,7 @@ export default function RootLayout({
       <body className={`${inter.className} antialiased bg-gray-50 dark:bg-gray-900`}>
         <Navigation />
         <ScrollProgress />
+        <TrackPageView />
         <main className="pt-16">
           {children}
         </main>

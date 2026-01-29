@@ -2,8 +2,6 @@
 
 import React, { useState } from 'react';
 import type { NextPage } from 'next';
-import ScrollProgress from './components/ScrollProgress';
-import Navigation from './components/Navigation';
 import LazyBackgroundEffect from './components/LazyBackgroundEffect';
 
 // Définir les types et chemins d'images pour chaque projet
@@ -122,8 +120,6 @@ const Home: NextPage = () => {
   return (
     <>
       <LazyBackgroundEffect />
-      <Navigation />
-      <ScrollProgress />
       
       {/* Modal pour la galerie de projets */}
       {showGallery && currentImages.length > 0 && (
