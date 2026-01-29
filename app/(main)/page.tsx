@@ -215,7 +215,7 @@ const Home: NextPage = () => {
         </div>
       )}
       
-      <article className="max-w-5xl mx-auto px-4 py-8 pt-24">
+      <article className="relative z-10 max-w-5xl mx-auto px-4 py-8 pt-24">
         {/* Accueil section */}
         <section id="accueil" className="min-h-[80vh] flex flex-col justify-center items-center mb-24">
           <div className="text-center space-y-6 animate-fade-in">
