@@ -42,7 +42,7 @@ const Navigation: React.FC = () => {
   };
 
   return (
-    <header className={`fixed top-0 left-0 w-full z-40 transition-all duration-300 ease-in-out ${isScrolled ? 'bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm shadow-sm' : ''}`}>
+    <header className={`fixed top-0 left-0 w-full z-40 transition-all duration-300 ease-in-out ${isScrolled ? 'bg-white/95 dark:bg-gray-900/95 shadow-sm' : ''}`}>
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex justify-between items-center py-4">
           <div>
@@ -57,8 +57,7 @@ const Navigation: React.FC = () => {
                 { id: 'competences', name: 'Compétences' },
                 { id: 'certifications', name: 'Certifications' },
                 { id: 'formation', name: 'Formation' },
-                { id: 'experience', name: 'Expérience' },
-                { id: 'contact', name: 'Contact' }
+                { id: 'experience', name: 'Expérience' }
               ].map(({ id, name }) => (
                 <li key={id}>
                   <button
@@ -114,7 +113,7 @@ const MobileNavigation: React.FC<MobileNavigationProps> = ({ scrollToSection, ac
       </button>
 
       {isOpen && (
-        <div className="fixed inset-0 z-50 bg-gray-900/80 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 bg-gray-900/80">
           <div className="fixed inset-y-0 right-0 w-3/4 max-w-sm bg-white dark:bg-gray-900 p-6 shadow-xl">
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Menu</h2>
@@ -136,8 +135,7 @@ const MobileNavigation: React.FC<MobileNavigationProps> = ({ scrollToSection, ac
                   { id: 'competences', name: 'Compétences' },
                   { id: 'certifications', name: 'Certifications' },
                   { id: 'formation', name: 'Formation' },
-                  { id: 'experience', name: 'Expérience' },
-                  { id: 'contact', name: 'Contact' }
+                  { id: 'experience', name: 'Expérience' }
                 ].map(({ id, name }) => (
                   <li key={id}>
                     <button

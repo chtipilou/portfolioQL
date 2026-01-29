@@ -47,7 +47,7 @@ section {
 
 @layer components {
   .card {
-    @apply bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm
+    @apply bg-white/95 dark:bg-gray-900/95
            border border-gray-200 dark:border-gray-700
            rounded-xl shadow-lg hover:shadow-xl
            transition-all duration-300;

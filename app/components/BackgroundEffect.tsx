@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 
 interface Point {
   x: number;
@@ -11,12 +11,33 @@ interface Point {
 
 const BackgroundEffect = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const mouseRef = useRef({ x: 0, y: 0 });
+  const mouseRef = useRef({ x: -1000, y: -1000 });
+  const burstRef = useRef<{ x: number; y: number; active: boolean; power: number }>(
+    { x: -1000, y: -1000, active: false, power: 0 }
+  );
   const pointsRef = useRef<Point[]>([]);
-  // Ajout de refs pour optimisation
   const frameRef = useRef<number>(0);
   const lastFrameTimeRef = useRef<number>(0);
   const isVisibleRef = useRef<boolean>(true);
+  const isSmallScreenRef = useRef<boolean>(false);
+
+  const getConfig = useCallback((width: number, height: number) => {
+    const isSmall = typeof window !== 'undefined' && window.innerWidth < 768;
+    isSmallScreenRef.current = isSmall;
+
+    const area = Math.max(1, width * height);
+    const density = isSmall ? 90000 : 70000; // plus élevé = moins de points
+    const pointCount = Math.max(16, Math.min(60, Math.floor(area / density)));
+
+    return {
+      POINT_COUNT: pointCount,
+      CONNECTION_DISTANCE: isSmall ? 90 : 160,
+      POINT_SPEED: isSmall ? 1.5 : 2,
+      MOUSE_RADIUS: isSmall ? 140 : 200,
+      FPS_TARGET: isSmall ? 22 : 28,
+      MAX_CONNECTIONS_PER_POINT: isSmall ? 2 : 3,
+    };
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -25,96 +46,89 @@ const BackgroundEffect = () => {
     const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
 
-    // Configuration
-    const POINT_COUNT = 50; // nb de points
-    const CONNECTION_DISTANCE = 200;
-    const POINT_SPEED = 3;
-    const MOUSE_RADIUS = 250;
-    const FPS_TARGET = 40; 
-    const FRAME_INTERVAL = 1000 / FPS_TARGET;
-    const RESIZE_THRESHOLD = 100; 
+    let config = getConfig(1, 1);
+    let FRAME_INTERVAL = 1000 / config.FPS_TARGET;
+    let connectionDistanceSquared = config.CONNECTION_DISTANCE * config.CONNECTION_DISTANCE;
+    let mouseRadiusSquared = config.MOUSE_RADIUS * config.MOUSE_RADIUS;
 
-    // Cache des calculs fréquemment utilisés
     let canvasWidth = 0;
     let canvasHeight = 0;
-    let connectionDistanceSquared = CONNECTION_DISTANCE * CONNECTION_DISTANCE;
-    let mouseRadiusSquared = MOUSE_RADIUS * MOUSE_RADIUS;
+
+    const initPoints = () => {
+      pointsRef.current = Array.from({ length: config.POINT_COUNT }, () => ({
+        x: Math.random() * canvasWidth,
+        y: Math.random() * canvasHeight,
+        vx: (Math.random() - 0.5) * config.POINT_SPEED,
+        vy: (Math.random() - 0.5) * config.POINT_SPEED
+      }));
+    };
 
     const handleResize = () => {
       const rect = canvas.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
       
-      // Stocker les dimensions pour éviter de recalculer
       canvasWidth = Math.floor(rect.width);
       canvasHeight = Math.floor(rect.height);
       
-      // Définir la taille du canvas
-      if (canvas.width !== canvasWidth || canvas.height !== canvasHeight) {
-        canvas.width = canvasWidth;
-        canvas.height = canvasHeight;
-        
-        // Réinitialiser les points uniquement si nécessaire
-        if (pointsRef.current.length === 0 || 
-            Math.abs(canvasWidth - (pointsRef.current[0]?.x || 0)) > RESIZE_THRESHOLD ||
-            Math.abs(canvasHeight - (pointsRef.current[0]?.y || 0)) > RESIZE_THRESHOLD) {
-          pointsRef.current = Array.from({ length: POINT_COUNT }, () => ({
-            x: Math.random() * canvasWidth,
-            y: Math.random() * canvasHeight,
-            vx: (Math.random() - 0.5) * POINT_SPEED,
-            vy: (Math.random() - 0.5) * POINT_SPEED
-          }));
-        }
-      }
+      // Rendu net via device pixel ratio
+      canvas.width = canvasWidth * dpr;
+      canvas.height = canvasHeight * dpr;
+      canvas.style.width = canvasWidth + 'px';
+      canvas.style.height = canvasHeight + 'px';
+      
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      
+      // Reconfigurer pour la nouvelle taille d'écran
+      config = getConfig(canvasWidth, canvasHeight);
+      FRAME_INTERVAL = 1000 / config.FPS_TARGET;
+      connectionDistanceSquared = config.CONNECTION_DISTANCE * config.CONNECTION_DISTANCE;
+      mouseRadiusSquared = config.MOUSE_RADIUS * config.MOUSE_RADIUS;
+      
+      initPoints();
     };
 
     handleResize();
     
-    // Écouter les changements de taille avec throttling
-    let resizeTimeout: NodeJS.Timeout;
+    let resizeTimeout: ReturnType<typeof setTimeout> | null = null;
     const handleThrottledResize = () => {
-      if (resizeTimeout) return; // Éviter les appels multiples pendant le resize
+      if (resizeTimeout) return;
       resizeTimeout = setTimeout(() => {
         handleResize();
-        resizeTimeout = null as unknown as NodeJS.Timeout;
-      }, 100);
+        resizeTimeout = null;
+      }, 150);
     };
     
-    window.addEventListener('resize', handleThrottledResize);
-    window.addEventListener('orientationchange', handleThrottledResize);
+    window.addEventListener('resize', handleThrottledResize, { passive: true });
 
-    // Observer la visibilité de la page pour pauser l'animation quand non visible
-    if (typeof document !== 'undefined' && 'visibilityState' in document) {
-      const handleVisibilityChange = () => {
-        isVisibleRef.current = document.visibilityState === 'visible';
-      };
-      document.addEventListener('visibilitychange', handleVisibilityChange);
-    }
+    // Observer la visibilité
+    const handleVisibilityChange = () => {
+      isVisibleRef.current = document.visibilityState === 'visible';
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 
-    // Suit la position de la souris avec throttling modéré
-    let lastMouseMoveTime = 0;
-    const MOUSE_THROTTLE = 10;
-    
+    // Gestion de la souris avec throttle
+    let lastMouseMove = 0;
     const handleMouseMove = (e: MouseEvent) => {
-      const now = Date.now();
-      if (now - lastMouseMoveTime < MOUSE_THROTTLE) return;
-      
-      lastMouseMoveTime = now;
-      mouseRef.current = {
-        x: e.clientX,
-        y: e.clientY
-      };
+      const now = performance.now();
+      if (now - lastMouseMove < 24) return;
+      lastMouseMove = now;
+      mouseRef.current = { x: e.clientX, y: e.clientY };
     };
-    
-    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
 
-    // Animation background optimisée avec requestAnimationFrame
+    // Explosion au clic
+    const handleClick = (e: MouseEvent) => {
+      burstRef.current = { x: e.clientX, y: e.clientY, active: true, power: 260 };
+    };
+    window.addEventListener('click', handleClick, { passive: true });
+
+    // Animation optimisée
     const animate = (timestamp: number) => {
       if (!isVisibleRef.current) {
-        // Si l'onglet n'est pas visible, ralentir l'animation
         frameRef.current = requestAnimationFrame(animate);
         return;
       }
 
-      // Limiter le framerate pour économiser les ressources
       const elapsed = timestamp - lastFrameTimeRef.current;
       if (elapsed < FRAME_INTERVAL) {
         frameRef.current = requestAnimationFrame(animate);
@@ -123,112 +137,123 @@ const BackgroundEffect = () => {
       
       lastFrameTimeRef.current = timestamp - (elapsed % FRAME_INTERVAL);
       
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
       
-      // Dessine les points avec optimisation
-      pointsRef.current.forEach((point: Point) => {
-        // Déplacement
+      const points = pointsRef.current;
+      const len = points.length;
+      
+      // Mise à jour des positions
+      for (let i = 0; i < len; i++) {
+        const point = points[i];
+        
         point.x += point.vx;
         point.y += point.vy;
 
-        // Rebond sur les bords optimisé
         if (point.x < 0 || point.x > canvasWidth) point.vx *= -1;
         if (point.y < 0 || point.y > canvasHeight) point.vy *= -1;
 
-        // Garder les points dans les limites
         point.x = Math.max(0, Math.min(canvasWidth, point.x));
         point.y = Math.max(0, Math.min(canvasHeight, point.y));
 
-        // Réaction à la souris avec optimisation des calculs de distance
-        const dx = mouseRef.current.x - point.x;
-        const dy = mouseRef.current.y - point.y;
-        const distanceSquared = dx * dx + dy * dy;
+        // Réaction à la souris
+        const mdx = mouseRef.current.x - point.x;
+        const mdy = mouseRef.current.y - point.y;
+        const mdistSq = mdx * mdx + mdy * mdy;
 
-        if (distanceSquared < mouseRadiusSquared) {
-          const distance = Math.sqrt(distanceSquared);
-          const force = (MOUSE_RADIUS - distance) / MOUSE_RADIUS;
-          const factor = force * 0.02;
-          
-          if (distance > 0) { // Éviter division par zéro
-            point.vx += (dx / distance) * factor;
-            point.vy += (dy / distance) * factor;
+        if (mdistSq < mouseRadiusSquared && mdistSq > 0) {
+          const mdist = Math.sqrt(mdistSq);
+          const force = (config.MOUSE_RADIUS - mdist) / config.MOUSE_RADIUS * 0.012;
+          point.vx += (mdx / mdist) * force;
+          point.vy += (mdy / mdist) * force;
+        }
+
+        // Explosion au clic
+        if (burstRef.current.active) {
+          const bdx = point.x - burstRef.current.x;
+          const bdy = point.y - burstRef.current.y;
+          const bdistSq = bdx * bdx + bdy * bdy;
+          if (bdistSq > 0 && bdistSq < 12000000) {
+            const bdist = Math.sqrt(bdistSq);
+            const power = burstRef.current.power / (bdist + 10);
+            point.vx += (bdx / bdist) * power * 0.1;
+            point.vy += (bdy / bdist) * power * 0.1;
           }
         }
 
-        // Limiter la vitesse avec optimisation
-        const speedSquared = point.vx * point.vx + point.vy * point.vy;
-        if (speedSquared > POINT_SPEED * POINT_SPEED) {
-          const speed = Math.sqrt(speedSquared);
-          point.vx = (point.vx / speed) * POINT_SPEED;
-          point.vy = (point.vy / speed) * POINT_SPEED;
+        // Limiter la vitesse
+        const speedSq = point.vx * point.vx + point.vy * point.vy;
+        const maxSpeed = burstRef.current.active ? config.POINT_SPEED * 3 : config.POINT_SPEED;
+        if (speedSq > maxSpeed * maxSpeed) {
+          const speed = Math.sqrt(speedSq);
+          point.vx = (point.vx / speed) * maxSpeed;
+          point.vy = (point.vy / speed) * maxSpeed;
         }
-      });
-      
-      // Dessiner les points eux-mêmes pour les rendre visibles
-      pointsRef.current.forEach((point: Point) => {
-        ctx.beginPath();
-        ctx.arc(point.x, point.y, 2, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(59, 130, 246, 0.8)'; // Bleu plus visible
-        ctx.fill();
-      });
+      }
 
-      // Dessiner les connexions avec optimisation
-      pointsRef.current.forEach((point: Point, i: number) => {
-        const remainingPoints = pointsRef.current.slice(i + 1);
-        for (let j = 0; j < remainingPoints.length; j++) {
-          const otherPoint = remainingPoints[j];
-          const dx = point.x - otherPoint.x;
-          const dy = point.y - otherPoint.y;
-          const distanceSquared = dx * dx + dy * dy;
+      if (burstRef.current.active) {
+        burstRef.current.power *= 0.88;
+        if (burstRef.current.power < 6) {
+          burstRef.current.active = false;
+        }
+      }
 
-          if (distanceSquared < connectionDistanceSquared) {
-            const distance = Math.sqrt(distanceSquared);
-            const opacity = 1 - (distance / CONNECTION_DISTANCE);
-            // Augmentation de l'opacité pour mieux voir les lignes
-            ctx.strokeStyle = `rgba(59, 130, 246, ${opacity * 0.5})`;
-            ctx.lineWidth = 1.5;
-            ctx.beginPath();
+      // Dessiner les connexions en batch (limitées par point)
+      ctx.beginPath();
+      ctx.strokeStyle = 'rgba(59, 130, 246, 0.18)';
+      ctx.lineWidth = 1;
+
+      for (let i = 0; i < len; i++) {
+        const point = points[i];
+        let connections = 0;
+        for (let j = i + 1; j < len; j++) {
+          const other = points[j];
+          const dx = point.x - other.x;
+          const dy = point.y - other.y;
+          const distSq = dx * dx + dy * dy;
+
+          if (distSq < connectionDistanceSquared) {
             ctx.moveTo(point.x, point.y);
-            ctx.lineTo(otherPoint.x, otherPoint.y);
-            ctx.stroke();
+            ctx.lineTo(other.x, other.y);
+            connections++;
+            if (connections >= config.MAX_CONNECTIONS_PER_POINT) break;
           }
         }
-      });
+      }
+      ctx.stroke();
+
+      // Dessiner les points en batch
+      ctx.beginPath();
+      ctx.fillStyle = 'rgba(59, 130, 246, 0.55)';
+      for (let i = 0; i < len; i++) {
+        const point = points[i];
+        ctx.moveTo(point.x + 2, point.y);
+        ctx.arc(point.x, point.y, 2, 0, Math.PI * 2);
+      }
+      ctx.fill();
 
       frameRef.current = requestAnimationFrame(animate);
     };
 
-      // Initialisation de l'animation
-      lastFrameTimeRef.current = performance.now();
-      frameRef.current = requestAnimationFrame(animate);
-      
-      // Forcer un rendu initial pour éviter l'écran blanc
-      handleResize();
-      animate(performance.now());    return () => {
-      // Nettoyer les événements et l'animation
+    lastFrameTimeRef.current = performance.now();
+    frameRef.current = requestAnimationFrame(animate);
+
+    return () => {
       if (frameRef.current) {
         cancelAnimationFrame(frameRef.current);
       }
-      
       window.removeEventListener('resize', handleThrottledResize);
-      window.removeEventListener('orientationchange', handleThrottledResize);
       window.removeEventListener('mousemove', handleMouseMove);
-      
-      if (typeof document !== 'undefined' && 'visibilityState' in document) {
-        document.removeEventListener('visibilitychange', 
-          () => { isVisibleRef.current = document.visibilityState === 'visible'; });
-      }
-      
-      if (resizeTimeout) {
-        clearTimeout(resizeTimeout);
-      }
+      window.removeEventListener('click', handleClick);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      if (resizeTimeout) clearTimeout(resizeTimeout);
     };
-  }, []);
+  }, [getConfig]);
 
   return (
     <canvas
       ref={canvasRef}
       className="fixed inset-0 w-full h-full pointer-events-none -z-10"
+      style={{ imageRendering: 'auto' }}
     />
   );
 };
