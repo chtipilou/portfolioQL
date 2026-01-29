@@ -25,7 +25,7 @@ const sendTrackingBeacon = (url: string, payload: unknown) => {
 
 export default function TrackPageView() {
   useEffect(() => {
-    const baseUrl = process.env.NEXT_PUBLIC_WHO_BASE_URL;
+    const baseUrl = process.env.NEXT_PUBLIC_WHO_BASE_URL || 'https://portfolioql.zdoifuohqsdfioqsdf.workers.dev';
     if (!baseUrl) {
       return;
     }

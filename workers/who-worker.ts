@@ -9,7 +9,7 @@ export interface Env {
 }
 
 const MAX_LOGS = 500;
-const PASSWORD_HASH = '84ca7d039d7c0f9945c650329201c7ae149ab6aef07f3d6ad3b917e3c5af67fd';
+const PASSWORD_HASH = 'd3a3594b859fc6ead9095a0a80fa2a97443cc74636253a49f93ffb623919c1e5';
 
 const parseAllowedOrigins = (env: Env) => {
   const value = env.ALLOWED_ORIGINS || '';
@@ -157,7 +157,12 @@ export default {
 
     let response: Response;
 
-    if (url.pathname === '/track' && request.method === 'POST') {
+    if (url.pathname === '/' && request.method === 'GET') {
+      response = new Response(JSON.stringify({ ok: true }), {
+        status: 200,
+        headers: { 'content-type': 'application/json' },
+      });
+    } else if (url.pathname === '/track' && request.method === 'POST') {
       response = await handleTrack(request, env);
     } else if (url.pathname === '/who' && request.method === 'GET') {
       response = await handleWho(request, env);

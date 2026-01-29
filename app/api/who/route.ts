@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import crypto from 'crypto';
 
-const PASSWORD_HASH = '84ca7d039d7c0f9945c650329201c7ae149ab6aef07f3d6ad3b917e3c5af67fd';
+const PASSWORD_HASH = 'd3a3594b859fc6ead9095a0a80fa2a97443cc74636253a49f93ffb623919c1e5';
 
 const hash = (value: string) => {
   return crypto.createHash('sha256').update(value, 'utf8').digest('hex');
