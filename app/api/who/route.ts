@@ -10,17 +10,39 @@ const hash = (value: string) => {
 
 /**
  * Check if an IP address is IPv6
+ * More robust check than just looking for colons
  */
 const isIPv6 = (ip: string): boolean => {
-  return ip.includes(':');
+  // Must contain colons and hex characters typical of IPv6
+  // But not be a URL-like string with port
+  if (!ip.includes(':')) return false;
+  
+  // Check if it looks like a URL (has protocol)
+  if (ip.includes('://')) return false;
+  
+  // IPv6 should have hex characters and colons in proper format
+  // Allow dots for IPv6-mapped IPv4 addresses (e.g., ::ffff:192.168.1.1)
+  const ipv6Pattern = /^[0-9a-f:.]+$/i;
+  return ipv6Pattern.test(ip);
 };
 
 /**
  * Check if an IP address is IPv4
+ * Validates both format and that each octet is in range 0-255
  */
 const isIPv4 = (ip: string): boolean => {
-  const ipv4Pattern = /^(\d{1,3}\.){3}\d{1,3}$/;
-  return ipv4Pattern.test(ip);
+  const ipv4Pattern = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/;
+  const match = ip.match(ipv4Pattern);
+  
+  if (!match) return false;
+  
+  // Check each octet is in valid range (0-255)
+  for (let i = 1; i <= 4; i++) {
+    const octet = parseInt(match[i], 10);
+    if (octet < 0 || octet > 255) return false;
+  }
+  
+  return true;
 };
 
 /**
@@ -55,6 +77,7 @@ const getClientIpInfo = (headersList: Headers): {
   ip: string; 
   version: 'ipv4' | 'mapped-ipv4' | 'filtered-ipv6' | 'unknown';
   originalIp?: string;
+  allIps?: string[];
 } => {
   // Get all possible IP sources
   const forwardedFor = headersList.get('x-forwarded-for');
@@ -73,25 +96,26 @@ const getClientIpInfo = (headersList: Headers): {
     cfConnectingIp,
   ].filter((ip): ip is string => Boolean(ip));
   
-  // First pass: Look for direct IPv4 addresses
+  // Single pass: Check for IPv4 first, then try to extract from IPv6
   for (const ip of allIps) {
+    // Direct IPv4
     if (isIPv4(ip)) {
       return {
         ip,
         version: 'ipv4',
+        allIps,
       };
     }
-  }
-  
-  // Second pass: Try to extract IPv4 from IPv6-mapped addresses
-  for (const ip of allIps) {
+    
+    // Try to extract IPv4 from IPv6-mapped address
     if (isIPv6(ip)) {
       const extractedIPv4 = extractIPv4FromMapped(ip);
-      if (extractedIPv4) {
+      if (extractedIPv4 && isIPv4(extractedIPv4)) {
         return {
           ip: extractedIPv4,
           version: 'mapped-ipv4',
           originalIp: ip,
+          allIps,
         };
       }
     }
@@ -104,6 +128,7 @@ const getClientIpInfo = (headersList: Headers): {
       ip: 'no-ipv4',
       version: 'filtered-ipv6',
       originalIp: allIps[0],
+      allIps,
     };
   }
   

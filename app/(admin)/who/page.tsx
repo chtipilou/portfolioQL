@@ -616,7 +616,7 @@ export default function WhoPage() {
                                 {log.ip}
                                 <span className="text-xs">{getDeviceIcon(ua.device)}</span>
                                 {log.ipVersion === 'mapped-ipv4' && (
-                                  <span className="px-1.5 py-0.5 rounded text-[10px] bg-blue-600/20 text-blue-400" title="IPv4 extrait d'IPv6">
+                                  <span className="px-1.5 py-0.5 rounded text-[10px] bg-blue-600/20 text-blue-400" title="IPv4 extrait d&apos;IPv6">
                                     IPv6→4
                                   </span>
                                 )}
