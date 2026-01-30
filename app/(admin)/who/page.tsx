@@ -168,7 +168,7 @@ const getIpVersionBadge = (version?: string) => {
     case 'ipv4':
       return { text: 'IPv4', color: 'bg-green-600/20 text-green-400' };
     case 'mapped-ipv4':
-      return { text: 'IPv4 (extrait d\'IPv6)', color: 'bg-blue-600/20 text-blue-400' };
+      return { text: 'IPv4 (extrait d&apos;IPv6)', color: 'bg-blue-600/20 text-blue-400' };
     case 'filtered-ipv6':
       return { text: 'IPv6 filtré', color: 'bg-red-600/20 text-red-400' };
     default:

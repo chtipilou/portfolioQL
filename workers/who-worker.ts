@@ -96,7 +96,7 @@ const isIPv4 = (ip: string): boolean => {
   // Check each octet is in valid range (0-255)
   for (let i = 1; i <= 4; i++) {
     const octet = parseInt(match[i], 10);
-    if (octet < 0 || octet > 255) return false;
+    if (octet > 255) return false;
   }
   
   return true;
