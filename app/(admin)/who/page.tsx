@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 
 type LogEntry = {
   ip?: string;
+  ipVersion?: 'ipv4' | 'mapped-ipv4' | 'filtered-ipv6' | 'unknown';
+  originalIp?: string;
   userAgent?: string;
   time?: string;
   path?: string;
@@ -160,9 +162,24 @@ const getBrowserIcon = (browser: string) => {
   return icons[browser] || '🌐';
 };
 
+// Get IP version badge
+const getIpVersionBadge = (version?: string) => {
+  switch (version) {
+    case 'ipv4':
+      return { text: 'IPv4', color: 'bg-green-600/20 text-green-400' };
+    case 'mapped-ipv4':
+      return { text: 'IPv4 (extrait d&apos;IPv6)', color: 'bg-blue-600/20 text-blue-400' };
+    case 'filtered-ipv6':
+      return { text: 'IPv6 filtré', color: 'bg-red-600/20 text-red-400' };
+    default:
+      return { text: 'Inconnu', color: 'bg-gray-600/20 text-gray-400' };
+  }
+};
+
 // Detail Modal Component
 const DetailModal = ({ log, onClose }: { log: LogEntry; onClose: () => void }) => {
   const ua = parseUA(log.userAgent || '');
+  const ipBadge = getIpVersionBadge(log.ipVersion);
   
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}>
@@ -176,7 +193,12 @@ const DetailModal = ({ log, onClose }: { log: LogEntry; onClose: () => void }) =
           <div className="flex items-center gap-3">
             <span className="text-4xl">{getFlag(log.country)}</span>
             <div>
-              <div className="font-mono text-lg">{log.ip}</div>
+              <div className="flex items-center gap-2">
+                <div className="font-mono text-lg">{log.ip}</div>
+                <span className={`px-2 py-0.5 rounded text-xs ${ipBadge.color}`}>
+                  {ipBadge.text}
+                </span>
+              </div>
               <div className="text-gray-400 text-sm">{log.city}, {getCountryName(log.country)}</div>
             </div>
           </div>
@@ -194,6 +216,38 @@ const DetailModal = ({ log, onClose }: { log: LogEntry; onClose: () => void }) =
             <h3 className="text-sm font-medium text-gray-400 mb-2">⏰ Date & Heure</h3>
             <div className="text-xl">{log.time ? formatDate(log.time) : '-'}</div>
             <div className="text-gray-500 text-sm mt-1">{log.time ? timeAgo(log.time) : ''}</div>
+          </div>
+
+          {/* IP Information */}
+          <div className="bg-gray-800/50 rounded-xl p-4">
+            <h3 className="text-sm font-medium text-gray-400 mb-3">🌐 Information IP</h3>
+            <div className="space-y-3">
+              <div>
+                <div className="text-gray-500 text-xs">Adresse IP</div>
+                <div className="font-mono text-lg flex items-center gap-2">
+                  {log.ip}
+                  <span className={`px-2 py-0.5 rounded text-xs ${ipBadge.color}`}>
+                    {ipBadge.text}
+                  </span>
+                </div>
+              </div>
+              {log.originalIp && log.originalIp !== log.ip && (
+                <div>
+                  <div className="text-gray-500 text-xs">Adresse IPv6 originale</div>
+                  <div className="font-mono text-sm text-gray-400 break-all bg-gray-900/50 p-2 rounded">
+                    {log.originalIp}
+                  </div>
+                  <div className="text-gray-500 text-xs mt-1">
+                    ℹ️ IPv4 extrait automatiquement de l&apos;adresse IPv6
+                  </div>
+                </div>
+              )}
+              {log.ipVersion === 'filtered-ipv6' && (
+                <div className="bg-red-500/10 border border-red-500/20 rounded p-2 text-sm text-red-400">
+                  ⚠️ Cette visite provient d&apos;une adresse IPv6 pure qui a été filtrée car seules les adresses IPv4 sont acceptées.
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Location */}
@@ -561,6 +615,16 @@ export default function WhoPage() {
                               <div className="font-mono text-sm flex items-center gap-2">
                                 {log.ip}
                                 <span className="text-xs">{getDeviceIcon(ua.device)}</span>
+                                {log.ipVersion === 'mapped-ipv4' && (
+                                  <span className="px-1.5 py-0.5 rounded text-[10px] bg-blue-600/20 text-blue-400" title="IPv4 extrait d&apos;IPv6">
+                                    IPv6→4
+                                  </span>
+                                )}
+                                {log.ipVersion === 'filtered-ipv6' && (
+                                  <span className="px-1.5 py-0.5 rounded text-[10px] bg-red-600/20 text-red-400" title="IPv6 filtré">
+                                    IPv6 ✗
+                                  </span>
+                                )}
                               </div>
                               <div className="text-gray-500 text-xs">
                                 {log.city && `${log.city} • `}{ua.browser} • {ua.os}
