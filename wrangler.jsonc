@@ -1,5 +1,5 @@
 {
-	"name": "portfolioql-who",
+	"name": "portfolioql",
 	"compatibility_date": "2026-01-29",
 	"main": "workers/who-worker.ts",
 	"kv_namespaces": [
