@@ -3,15 +3,15 @@ import { Inter } from 'next/font/google';
 import "./globals.css";
 
 // Optimisation de la police - préchargement...
-const inter = Inter({ 
+const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
   preload: true,
 });
 
 export const metadata: Metadata = {
-  title: "Quentin Leroy - Portfolio BTS SIO SLAM",
-  description: "Portfolio professionnel de Quentin Leroy - Étudiant en BTS SIO option SLAM",
+  title: "Quentin Leroy - Portfolio",
+  description: "Portfolio professionnel de Quentin Leroy",
 };
 
 // Définition du viewport (Next.js 14)
@@ -32,8 +32,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="fr" className="scroll-smooth">
-      <body className={`${inter.className} antialiased`}>
+    <html lang="fr" className="scroll-smooth" suppressHydrationWarning>
+      <body className={`${inter.className} antialiased`} suppressHydrationWarning>
         {children}
       </body>
     </html>
