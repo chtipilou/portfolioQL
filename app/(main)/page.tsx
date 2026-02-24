@@ -543,34 +543,19 @@ const Home: NextPage = () => {
               </div>
             </div>
 
-            <div className="card p-6 hover:-translate-y-1 transition-transform" style={{ borderColor: 'rgba(249,115,22,0.25)', background: 'linear-gradient(135deg, rgba(249,115,22,0.03) 0%, transparent 60%)' }}>
+            <div className="card p-6 hover:-translate-y-1 transition-transform">
               <div className="flex items-start justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <h3 className="text-xl font-bold">RecollRustV2</h3>
-                  <span className="flex items-center gap-1 px-2 py-0.5 text-xs rounded-full font-medium animate-pulse whitespace-nowrap" style={{ background: 'rgba(249,115,22,0.15)', color: '#fb923c', border: '1px solid rgba(249,115,22,0.3)' }}>
-                    <span className="w-1.5 h-1.5 rounded-full bg-orange-400 inline-block shrink-0"></span>
-                    En développement
-                  </span>
-                </div>
+                <h3 className="text-xl font-bold">RecollRustV2</h3>
                 <div className="flex gap-2">
-                  <span className="px-3 py-1 rounded-full text-sm font-medium" style={{ background: 'rgba(249,115,22,0.12)', color: '#fb923c' }}>Rust</span>
+                  <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm font-medium">Rust</span>
                   <span className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm">SeekStorm</span>
+                  <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">ELK</span>
                 </div>
               </div>
               <p className="text-gray-600 dark:text-gray-300 mb-4">
                 Moteur de recherche full-text personnel capable d'indexer et de rechercher dans le contenu intégral de tous les fichiers d'un PC, même à très grande échelle (100 To+). Recherche sub-milliseconde, sans limitation de RAM ou CPU.
               </p>
-              <div className="flex items-center gap-3 mt-4 flex-wrap">
-                <button
-                  onClick={() => setShowRecollModal(true)}
-                  className="flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors"
-                  style={{ background: 'rgba(249,115,22,0.15)', color: '#fb923c', border: '1px solid rgba(249,115,22,0.3)' }}
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-                  </svg>
-                  Genèse du projet
-                </button>
+              <div className="flex items-center gap-4 mt-4">
                 <button
                   onClick={(e) => openGallery(e, recollRustV2Images)}
                   className="btn bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center gap-2"
@@ -578,7 +563,16 @@ const Home: NextPage = () => {
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
-                  Captures d'écran
+                  Voir les captures d'écran
+                </button>
+                <button
+                  onClick={() => setShowRecollModal(true)}
+                  className="btn bg-orange-100 hover:bg-orange-200 text-orange-700 px-4 py-2 rounded-md flex items-center gap-2"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                  </svg>
+                  Genèse du projet
                 </button>
               </div>
             </div>
