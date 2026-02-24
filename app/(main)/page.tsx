@@ -556,7 +556,8 @@ const Home: NextPage = () => {
                 Moteur de recherche full-text personnel capable d'indexer et de rechercher dans le contenu intégral de tous les fichiers d'un PC, même à très grande échelle (100 To+). Recherche sub-milliseconde, sans limitation de RAM ou CPU.
               </p>
               <div className="flex items-center gap-4 mt-4">
-                <button
+                <a
+                  href="#"
                   onClick={(e) => openGallery(e, recollRustV2Images)}
                   className="btn bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center gap-2"
                 >
@@ -564,7 +565,7 @@ const Home: NextPage = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
                   Voir les captures d'écran
-                </button>
+                </a>
                 <a
                   href="#"
                   onClick={(e) => { e.preventDefault(); setShowRecollModal(true); }}
