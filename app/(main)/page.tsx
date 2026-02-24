@@ -48,6 +48,14 @@ const dotgitEnhancedImages: ProjectImage[] = [
   { path: "/portfolioQL/assets/dotgitEnhanced/dotgitEnhanced(6).png", title: "Cache des sites analysés - DotGitEnhanced" },
 ];
 
+const recollRustV2Images: ProjectImage[] = [
+  { path: "/portfolioQL/assets/RecollRustV2/Code_RecollRustV2.png", title: "Code source - RecollRustV2" },
+  { path: "/portfolioQL/assets/RecollRustV2/RecollRustV2_Config.png", title: "Configuration - RecollRustV2" },
+  { path: "/portfolioQL/assets/RecollRustV2/RecollRustV2_Dashboard.png", title: "Dashboard - RecollRustV2" },
+  { path: "/portfolioQL/assets/RecollRustV2/RecollRustV2_Index.png", title: "Indexation - RecollRustV2" },
+  { path: "/portfolioQL/assets/RecollRustV2/RecollRustV2_Search.png", title: "Recherche Full-Text - RecollRustV2" },
+];
+
 // Composant pour afficher un niveau de compétence
 const SkillLevel = ({ level, maxLevel = 5 }: { level: number; maxLevel?: number }) => (
   <div className="flex gap-1">
@@ -83,6 +91,9 @@ const Home: NextPage = () => {
   // États pour les modaux et les galeries
   const [showCertModal, setShowCertModal] = useState(false);
   const [certModalContent, setCertModalContent] = useState({ url: '', type: '', title: '' });
+
+  // État pour le modal de raisonnement RecollRustV2
+  const [showRecollModal, setShowRecollModal] = useState(false);
 
   // État pour la galerie d'images de projets
   const [showGallery, setShowGallery] = useState(false);
@@ -223,6 +234,189 @@ const Home: NextPage = () => {
         </div>
       )}
 
+      {/* Modal raisonnement RecollRustV2 */}
+      {showRecollModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ background: 'rgba(0,0,0,0.92)' }}
+          onClick={() => setShowRecollModal(false)}
+        >
+          <div
+            className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl border border-orange-500/30 shadow-2xl"
+            style={{ background: 'linear-gradient(135deg, #0f1117 0%, #1a1a2e 50%, #0f1117 100%)' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b border-orange-500/20 rounded-t-2xl" style={{ background: 'rgba(15,17,23,0.95)', backdropFilter: 'blur(12px)' }}>
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg" style={{ background: 'rgba(249,115,22,0.15)' }}>
+                  <svg className="w-5 h-5 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold text-white">RecollRustV2</h2>
+                  <p className="text-xs text-orange-400/80">Full-Text Search Engine — Genèse du projet</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowRecollModal(false)}
+                className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Intro */}
+            <div className="px-6 pt-6 pb-2">
+              <p className="text-gray-300 text-sm leading-relaxed">
+                Tout a commencé avec une obsession simple : <span className="text-orange-400 font-semibold">retrouver n'importe quel fichier en moins d'une seconde</span> — et pas seulement par son nom, mais par son <em>contenu entier</em>. Voici l'évolution du projet depuis mi-2024.
+              </p>
+            </div>
+
+            {/* Timeline */}
+            <div className="px-6 py-4 space-y-0">
+
+              {/* Etape 1 */}
+              <div className="flex gap-4">
+                <div className="flex flex-col items-center">
+                  <div className="w-3 h-3 rounded-full mt-1 shrink-0" style={{ background: '#3b82f6' }}></div>
+                  <div className="w-px flex-1 my-1" style={{ background: 'linear-gradient(to bottom, #3b82f6, #f97316)' }}></div>
+                </div>
+                <div className="pb-6">
+                  <span className="text-xs font-mono text-blue-400">Mi-2024 — Point de départ</span>
+                  <h4 className="text-sm font-semibold text-white mt-1 mb-1">L'inspiration : Everything</h4>
+                  <p className="text-gray-400 text-sm leading-relaxed">
+                    J'installe <strong className="text-gray-200">Everything</strong> et je suis bluffé : indexation des noms de fichiers en quelques secondes, recherche instantanée sur un disque entier. Mais il ne cherche que dans les <em>noms</em>. Mon objectif devient alors de construire la même chose, mais capable d'indexer et chercher dans le <span className="text-blue-400 font-medium">contenu intégral</span> de chaque fichier.
+                  </p>
+                </div>
+              </div>
+
+              {/* Etape 2 */}
+              <div className="flex gap-4">
+                <div className="flex flex-col items-center">
+                  <div className="w-3 h-3 rounded-full mt-1 shrink-0" style={{ background: '#ef4444' }}></div>
+                  <div className="w-px flex-1 my-1" style={{ background: 'linear-gradient(to bottom, #ef4444, #f97316)' }}></div>
+                </div>
+                <div className="pb-6">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-mono text-red-400">Mi-2024 — Tentative #1</span>
+                    <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ background: 'rgba(239,68,68,0.15)', color: '#f87171' }}>Abandonné</span>
+                  </div>
+                  <h4 className="text-sm font-semibold text-white mt-1 mb-1">ElasticSearch / Stack ELK</h4>
+                  <p className="text-gray-400 text-sm leading-relaxed">
+                    Je monte une stack ELK avec des scripts Python pour tout ingérer. Rapidement, les <strong className="text-gray-200">NGrams et Edge-NGrams</strong> deviennent mon ennemi : un NGram trop grand et le disque sature ; trop petit et j'ai des faux positifs/négatifs constants. Tests sur le dump Wikipedia — les performances s'effondrent, l'indexation est d'une lenteur catastrophique sur de gros volumes.
+                  </p>
+                </div>
+              </div>
+
+              {/* Etape 3 */}
+              <div className="flex gap-4">
+                <div className="flex flex-col items-center">
+                  <div className="w-3 h-3 rounded-full mt-1 shrink-0" style={{ background: '#ef4444' }}></div>
+                  <div className="w-px flex-1 my-1" style={{ background: 'linear-gradient(to bottom, #ef4444, #f97316)' }}></div>
+                </div>
+                <div className="pb-6">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-mono text-red-400">2024 — Benchmark de l'existant</span>
+                    <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ background: 'rgba(239,68,68,0.15)', color: '#f87171' }}>Aucun viable</span>
+                  </div>
+                  <h4 className="text-sm font-semibold text-white mt-1 mb-1">Tour d'horizon des solutions existantes</h4>
+                  <p className="text-gray-400 text-sm leading-relaxed mb-2">
+                    Je génère <strong className="text-gray-200">1 To de fausses données</strong> avec Faker et je teste méthodiquement tout ce qui existe :
+                  </p>
+                  <div className="grid grid-cols-2 gap-1.5 text-xs">
+                    {[
+                      { name: 'Everything (alpha)', reason: 'CPU/RAM excessif' },
+                      { name: 'Recoll / DocFetcher', reason: 'Crash sur gros volumes' },
+                      { name: 'AnyTXT / Agent Ransack', reason: 'Inutilisable à scale' },
+                      { name: 'Copernic', reason: 'Payant' },
+                      { name: 'Meilisearch / Zinc', reason: 'Perte de données / NGram' },
+                      { name: 'Typesense / OpenSearch', reason: "N'atteint pas mes attentes" },
+                      { name: 'Apache Solr / Lucene', reason: 'Trop complexe / lent' },
+                      { name: 'PostgreSQL FTS', reason: 'Non adapté à mes besoins' },
+                    ].map((item) => (
+                      <div key={item.name} className="flex items-center gap-1.5 px-2 py-1 rounded-md" style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)' }}>
+                        <svg className="w-3 h-3 text-red-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
+                        <div>
+                          <span className="text-gray-200 font-medium">{item.name}</span>
+                          <span className="text-gray-500 block">{item.reason}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Etape 4 */}
+              <div className="flex gap-4">
+                <div className="flex flex-col items-center">
+                  <div className="w-3 h-3 rounded-full mt-1 shrink-0" style={{ background: '#eab308' }}></div>
+                  <div className="w-px flex-1 my-1" style={{ background: 'linear-gradient(to bottom, #eab308, #f97316)' }}></div>
+                </div>
+                <div className="pb-6">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-mono text-yellow-400">Fin 2025 — Tentative #2</span>
+                    <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ background: 'rgba(234,179,8,0.15)', color: '#fbbf24' }}>Instable</span>
+                  </div>
+                  <h4 className="text-sm font-semibold text-white mt-1 mb-1">RecollRustV1 — Rust + Tantivy</h4>
+                  <p className="text-gray-400 text-sm leading-relaxed">
+                    Décision de tout faire from scratch en <strong className="text-gray-200">Rust</strong>, inspiré de l'architecture de Recoll. Backend <strong className="text-gray-200">Tantivy</strong> pour l'indexation. Le projet fonctionne… jusqu'à ce que le garbage collector de Tantivy commence à crasher aléatoirement sur de gros corpus. De plus, <span className="text-yellow-400">Tantivy est abandonné mi-2025</span> — pas question de construire sur une base morte.
+                  </p>
+                </div>
+              </div>
+
+              {/* Etape 5 — Current */}
+              <div className="flex gap-4">
+                <div className="flex flex-col items-center">
+                  <div className="w-3 h-3 rounded-full mt-1 shrink-0 animate-pulse" style={{ background: '#f97316', boxShadow: '0 0 8px #f97316' }}></div>
+                </div>
+                <div className="pb-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-mono text-orange-400">Début 2026 — En cours</span>
+                    <span className="text-xs px-2 py-0.5 rounded-full font-medium animate-pulse" style={{ background: 'rgba(249,115,22,0.2)', color: '#fb923c' }}>Actif</span>
+                  </div>
+                  <h4 className="text-sm font-semibold text-white mt-1 mb-1">RecollRustV2 — Rust + SeekStorm</h4>
+                  <p className="text-gray-400 text-sm leading-relaxed mb-3">
+                    Repartir sur les mêmes bases Rust mais avec <strong className="text-orange-400">SeekStorm</strong> comme backend : recherche <span className="text-orange-400 font-semibold">sub-milliseconde</span>, indexation ultra-rapide, projet activement maintenu. L'objectif final : indexer l'intégralité d'un PC (potentiellement <strong className="text-gray-200">100 To de fichiers</strong>) et retrouver n'importe quel contenu instantanément.
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {['Rust', 'SeekStorm', 'Full-Text Search', 'Sub-ms Search', 'Indexation 100To+'].map((tag) => (
+                      <span key={tag} className="text-xs px-2.5 py-1 rounded-full font-medium" style={{ background: 'rgba(249,115,22,0.15)', color: '#fb923c', border: '1px solid rgba(249,115,22,0.3)' }}>
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Footer actions */}
+            <div className="sticky bottom-0 flex items-center gap-3 px-6 py-4 border-t border-orange-500/20 rounded-b-2xl" style={{ background: 'rgba(15,17,23,0.95)', backdropFilter: 'blur(12px)' }}>
+              <button
+                onClick={(e) => { setShowRecollModal(false); openGallery(e, recollRustV2Images); }}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                style={{ background: 'rgba(249,115,22,0.15)', color: '#fb923c', border: '1px solid rgba(249,115,22,0.3)' }}
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                Voir les captures d'écran
+              </button>
+              <button
+                onClick={() => setShowRecollModal(false)}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-gray-400 hover:text-gray-200 transition-colors"
+                style={{ background: 'rgba(255,255,255,0.05)' }}
+              >
+                Fermer
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <article className="relative z-10 max-w-5xl mx-auto px-4 py-8 pt-24">
         {/* Accueil section */}
         <section id="accueil" className="min-h-[80vh] flex flex-col justify-center items-center mb-24">
@@ -345,6 +539,46 @@ const Home: NextPage = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
                   Voir les captures d'écran
+                </button>
+              </div>
+            </div>
+
+            <div className="card p-6 hover:-translate-y-1 transition-transform" style={{ borderColor: 'rgba(249,115,22,0.25)', background: 'linear-gradient(135deg, rgba(249,115,22,0.03) 0%, transparent 60%)' }}>
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <h3 className="text-xl font-bold">RecollRustV2</h3>
+                  <span className="flex items-center gap-1 px-2 py-0.5 text-xs rounded-full font-medium animate-pulse" style={{ background: 'rgba(249,115,22,0.15)', color: '#fb923c', border: '1px solid rgba(249,115,22,0.3)' }}>
+                    <span className="w-1.5 h-1.5 rounded-full bg-orange-400 inline-block"></span>
+                    En développement
+                  </span>
+                </div>
+                <div className="flex gap-2">
+                  <span className="px-3 py-1 rounded-full text-sm font-medium" style={{ background: 'rgba(249,115,22,0.12)', color: '#fb923c' }}>Rust</span>
+                  <span className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm">SeekStorm</span>
+                </div>
+              </div>
+              <p className="text-gray-600 dark:text-gray-300 mb-4">
+                Moteur de recherche full-text personnel capable d'indexer et de rechercher dans le contenu intégral de tous les fichiers d'un PC, même à très grande échelle (100 To+). Recherche sub-milliseconde, sans limitation de RAM ou CPU.
+              </p>
+              <div className="flex items-center gap-3 mt-4 flex-wrap">
+                <button
+                  onClick={() => setShowRecollModal(true)}
+                  className="flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                  style={{ background: 'rgba(249,115,22,0.15)', color: '#fb923c', border: '1px solid rgba(249,115,22,0.3)' }}
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                  </svg>
+                  Genèse du projet
+                </button>
+                <button
+                  onClick={(e) => openGallery(e, recollRustV2Images)}
+                  className="btn bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center gap-2"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  Captures d'écran
                 </button>
               </div>
             </div>
