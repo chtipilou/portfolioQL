@@ -256,7 +256,7 @@ const Home: NextPage = () => {
                 </div>
                 <div>
                   <h2 className="text-lg font-bold text-white">RecollRustV2</h2>
-                  <p className="text-xs text-orange-400/80">Full-Text Search Engine — Genèse du projet</p>
+                  <p className="text-xs text-orange-400/80">Full-Text Search Engine - Genèse du projet</p>
                 </div>
               </div>
               <button
@@ -272,7 +272,7 @@ const Home: NextPage = () => {
             {/* Intro */}
             <div className="px-6 pt-6 pb-2">
               <p className="text-gray-300 text-sm leading-relaxed">
-                Tout a commencé avec une obsession simple : <span className="text-orange-400 font-semibold">retrouver n'importe quel fichier en moins d'une seconde</span> — et pas seulement par son nom, mais par son <em>contenu entier</em>. Voici l'évolution du projet depuis mi-2024.
+                Tout a commencé avec une obsession simple : <span className="text-orange-400 font-semibold">retrouver n'importe quel fichier en moins d'une seconde</span>, pas seulement par son nom, mais par son <em>contenu entier</em>. Voici l'évolution du projet depuis mi-2024.
               </p>
             </div>
 
@@ -286,7 +286,7 @@ const Home: NextPage = () => {
                   <div className="w-px flex-1 my-1" style={{ background: 'linear-gradient(to bottom, #3b82f6, #f97316)' }}></div>
                 </div>
                 <div className="pb-6">
-                  <span className="text-xs font-mono text-blue-400">Mi-2024 — Point de départ</span>
+                  <span className="text-xs font-mono text-blue-400">Mi-2024 - Point de départ</span>
                   <h4 className="text-sm font-semibold text-white mt-1 mb-1">L'inspiration : Everything</h4>
                   <p className="text-gray-400 text-sm leading-relaxed">
                     J'installe <strong className="text-gray-200">Everything</strong> et je suis bluffé : indexation des noms de fichiers en quelques secondes, recherche instantanée sur un disque entier. Mais il ne cherche que dans les <em>noms</em>. Mon objectif devient alors de construire la même chose, mais capable d'indexer et chercher dans le <span className="text-blue-400 font-medium">contenu intégral</span> de chaque fichier.
@@ -302,12 +302,12 @@ const Home: NextPage = () => {
                 </div>
                 <div className="pb-6">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-mono text-red-400">Mi-2024 — Tentative #1</span>
+                    <span className="text-xs font-mono text-red-400">Mi-2024 - Tentative #1</span>
                     <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ background: 'rgba(239,68,68,0.15)', color: '#f87171' }}>Abandonné</span>
                   </div>
                   <h4 className="text-sm font-semibold text-white mt-1 mb-1">ElasticSearch / Stack ELK</h4>
                   <p className="text-gray-400 text-sm leading-relaxed">
-                    Je monte une stack ELK avec des scripts Python pour tout ingérer. Rapidement, les <strong className="text-gray-200">NGrams et Edge-NGrams</strong> deviennent mon ennemi : un NGram trop grand et le disque sature ; trop petit et j'ai des faux positifs/négatifs constants. Tests sur le dump Wikipedia — les performances s'effondrent, l'indexation est d'une lenteur catastrophique sur de gros volumes.
+                    Je monte une stack ELK avec des scripts Python pour tout ingérer. Rapidement, les <strong className="text-gray-200">NGrams et Edge-NGrams</strong> deviennent mon ennemi : un NGram trop grand et le disque sature ; trop petit et j'ai des faux positifs/négatifs constants. Tests sur le dump Wikipedia, les performances s'effondrent et l'indexation est d'une lenteur catastrophique sur de gros volumes.
                   </p>
                 </div>
               </div>
@@ -320,7 +320,7 @@ const Home: NextPage = () => {
                 </div>
                 <div className="pb-6">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-mono text-red-400">2024 — Benchmark de l'existant</span>
+                    <span className="text-xs font-mono text-red-400">2024 - Benchmark de l'existant</span>
                     <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ background: 'rgba(239,68,68,0.15)', color: '#f87171' }}>Aucun viable</span>
                   </div>
                   <h4 className="text-sm font-semibold text-white mt-1 mb-1">Tour d'horizon des solutions existantes</h4>
@@ -358,12 +358,12 @@ const Home: NextPage = () => {
                 </div>
                 <div className="pb-6">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-mono text-yellow-400">Fin 2025 — Tentative #2</span>
+                    <span className="text-xs font-mono text-yellow-400">Fin 2025 - Tentative #2</span>
                     <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ background: 'rgba(234,179,8,0.15)', color: '#fbbf24' }}>Instable</span>
                   </div>
-                  <h4 className="text-sm font-semibold text-white mt-1 mb-1">RecollRustV1 — Rust + Tantivy</h4>
+                  <h4 className="text-sm font-semibold text-white mt-1 mb-1">RecollRustV1 - Rust + Tantivy</h4>
                   <p className="text-gray-400 text-sm leading-relaxed">
-                    Décision de tout faire from scratch en <strong className="text-gray-200">Rust</strong>, inspiré de l'architecture de Recoll. Backend <strong className="text-gray-200">Tantivy</strong> pour l'indexation. Le projet fonctionne… jusqu'à ce que le garbage collector de Tantivy commence à crasher aléatoirement sur de gros corpus. De plus, <span className="text-yellow-400">Tantivy est abandonné mi-2025</span> — pas question de construire sur une base morte.
+                    Décision de tout faire from scratch en <strong className="text-gray-200">Rust</strong>, inspiré de l'architecture de Recoll. Backend <strong className="text-gray-200">Tantivy</strong> pour l'indexation. Le projet fonctionne… jusqu'à ce que le garbage collector de Tantivy commence à crasher aléatoirement sur de gros corpus. <span className="text-yellow-400">Tantivy est abandonné mi-2025</span>, continuer à développer sur un projet mort et instable n'était plus une option viable.
                   </p>
                 </div>
               </div>
@@ -375,10 +375,10 @@ const Home: NextPage = () => {
                 </div>
                 <div className="pb-2">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-mono text-orange-400">Début 2026 — En cours</span>
+                    <span className="text-xs font-mono text-orange-400">Début 2026 - En cours</span>
                     <span className="text-xs px-2 py-0.5 rounded-full font-medium animate-pulse" style={{ background: 'rgba(249,115,22,0.2)', color: '#fb923c' }}>Actif</span>
                   </div>
-                  <h4 className="text-sm font-semibold text-white mt-1 mb-1">RecollRustV2 — Rust + SeekStorm</h4>
+                  <h4 className="text-sm font-semibold text-white mt-1 mb-1">RecollRustV2 - Rust + SeekStorm</h4>
                   <p className="text-gray-400 text-sm leading-relaxed mb-3">
                     Repartir sur les mêmes bases Rust mais avec <strong className="text-orange-400">SeekStorm</strong> comme backend : recherche <span className="text-orange-400 font-semibold">sub-milliseconde</span>, indexation ultra-rapide, projet activement maintenu. L'objectif final : indexer l'intégralité d'un PC (potentiellement <strong className="text-gray-200">100 To de fichiers</strong>) et retrouver n'importe quel contenu instantanément.
                   </p>
@@ -547,8 +547,8 @@ const Home: NextPage = () => {
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-2">
                   <h3 className="text-xl font-bold">RecollRustV2</h3>
-                  <span className="flex items-center gap-1 px-2 py-0.5 text-xs rounded-full font-medium animate-pulse" style={{ background: 'rgba(249,115,22,0.15)', color: '#fb923c', border: '1px solid rgba(249,115,22,0.3)' }}>
-                    <span className="w-1.5 h-1.5 rounded-full bg-orange-400 inline-block"></span>
+                  <span className="flex items-center gap-1 px-2 py-0.5 text-xs rounded-full font-medium animate-pulse whitespace-nowrap" style={{ background: 'rgba(249,115,22,0.15)', color: '#fb923c', border: '1px solid rgba(249,115,22,0.3)' }}>
+                    <span className="w-1.5 h-1.5 rounded-full bg-orange-400 inline-block shrink-0"></span>
                     En développement
                   </span>
                 </div>
