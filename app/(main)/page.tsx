@@ -549,13 +549,12 @@ const Home: NextPage = () => {
                 <div className="flex gap-2">
                   <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm font-medium">Rust</span>
                   <span className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm">SeekStorm</span>
-                  <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">ELK</span>
                 </div>
               </div>
               <p className="text-gray-600 dark:text-gray-300 mb-4">
                 Moteur de recherche full-text personnel capable d'indexer et de rechercher dans le contenu intégral de tous les fichiers d'un PC, même à très grande échelle (100 To+). Recherche sub-milliseconde, sans limitation de RAM ou CPU.
               </p>
-              <div className="grid grid-flow-col auto-cols-max gap-4 mt-4">
+              <div className="flex items-center gap-4 mt-4">
                 <button
                   onClick={(e) => openGallery(e, recollRustV2Images)}
                   className="btn bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center gap-2"
