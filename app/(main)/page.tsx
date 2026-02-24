@@ -557,6 +557,7 @@ const Home: NextPage = () => {
               <div className="flex items-center gap-4 mt-4">
                 <button
                   onClick={(e) => openGallery(e, recollRustV2Images)}
+                  style={{ width: 'fit-content' }}
                   className="btn bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center gap-2"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -567,6 +568,7 @@ const Home: NextPage = () => {
                 <a
                   href="#"
                   onClick={(e) => { e.preventDefault(); setShowRecollModal(true); }}
+                  style={{ width: 'fit-content' }}
                   className="btn bg-orange-100 hover:bg-orange-200 text-orange-700 px-4 py-2 rounded-md flex items-center gap-2"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
