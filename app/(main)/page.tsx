@@ -3,6 +3,8 @@
 import React, { useState } from 'react';
 import type { NextPage } from 'next';
 import LazyBackgroundEffect from '../components/LazyBackgroundEffect';
+import ResilientImage from '../components/ResilientImage';
+import { getAssetCandidates, getPreferredAssetPath } from '../lib/asset-paths';
 
 // Définir les types et chemins d'images pour chaque projet
 interface ProjectImage {
@@ -11,50 +13,64 @@ interface ProjectImage {
 }
 
 const nodexssImages: ProjectImage[] = [
-  { path: "/portfolioQL/assets/nodexss/Login.png", title: "Page de connexion - NodeXSS" },
-  { path: "/portfolioQL/assets/nodexss/Register.png", title: "Page d'inscription - NodeXSS" },
-  { path: "/portfolioQL/assets/nodexss/Home.png", title: "Page d'accueil - NodeXSS" },
-  { path: "/portfolioQL/assets/nodexss/Dashboard.png", title: "Tableau de bord - NodeXSS" },
-  { path: "/portfolioQL/assets/nodexss/Reports.png", title: "Rapports - NodeXSS" },
-  { path: "/portfolioQL/assets/nodexss/AnalyseWeb.png", title: "Analyse Web - NodeXSS" },
-  { path: "/portfolioQL/assets/nodexss/Historique.png", title: "Historique - NodeXSS" },
+  { path: "/assets/nodexss/Login.png", title: "Page de connexion - NodeXSS" },
+  { path: "/assets/nodexss/Register.png", title: "Page d'inscription - NodeXSS" },
+  { path: "/assets/nodexss/Home.png", title: "Page d'accueil - NodeXSS" },
+  { path: "/assets/nodexss/Dashboard.png", title: "Tableau de bord - NodeXSS" },
+  { path: "/assets/nodexss/Reports.png", title: "Rapports - NodeXSS" },
+  { path: "/assets/nodexss/AnalyseWeb.png", title: "Analyse Web - NodeXSS" },
+  { path: "/assets/nodexss/Historique.png", title: "Historique - NodeXSS" },
 ];
 
 const shareImages: ProjectImage[] = [
-  { path: "/portfolioQL/assets/Share/MenuPrincipale.png", title: "Menu Principal - Share" },
-  { path: "/portfolioQL/assets/Share/ListeCategories.png", title: "Liste des catégories - Share" },
-  { path: "/portfolioQL/assets/Share/ListeDesFichiers.png", title: "Liste des fichiers - Share" },
-  { path: "/portfolioQL/assets/Share/AjouterUnFichier.png", title: "Ajouter un fichier - Share" },
-  { path: "/portfolioQL/assets/Share/PageAdmin.png", title: "Page Admin - Share" },
-  { path: "/portfolioQL/assets/Share/PageContact.png", title: "Page Contact - Share" },
+  { path: "/assets/Share/MenuPrincipale.png", title: "Menu Principal - Share" },
+  { path: "/assets/Share/ListeCategories.png", title: "Liste des catégories - Share" },
+  { path: "/assets/Share/ListeDesFichiers.png", title: "Liste des fichiers - Share" },
+  { path: "/assets/Share/AjouterUnFichier.png", title: "Ajouter un fichier - Share" },
+  { path: "/assets/Share/PageAdmin.png", title: "Page Admin - Share" },
+  { path: "/assets/Share/PageContact.png", title: "Page Contact - Share" },
 ];
 
 const gsbImages: ProjectImage[] = [
-  { path: "/portfolioQL/assets/gsbextranet/MenuPrincipale.png", title: "Menu Principal - GSBExtranet" },
-  { path: "/portfolioQL/assets/gsbextranet/GererLesProduits.png", title: "Gestion des Produits - GSBExtranet" },
-  { path: "/portfolioQL/assets/gsbextranet/GererLesVisio.png", title: "Gestion des Visioconférences - GSBExtranet" },
-  { path: "/portfolioQL/assets/gsbextranet/GererLesMaintenances.png", title: "Gestion des Maintenances - GSBExtranet" },
-  { path: "/portfolioQL/assets/gsbextranet/LogsOperations.png", title: "Logs des Opérations - GSBExtranet" },
-  { path: "/portfolioQL/assets/gsbextranet/GererMesdonnées.png", title: "Gestion des Données - GSBExtranet" },
-  { path: "/portfolioQL/assets/gsbextranet/Auth2Facteur.png", title: "Auth 2 Facteurs - GSBExtranet" },
+  { path: "/assets/gsbextranet/MenuPrincipale.png", title: "Menu Principal - GSBExtranet" },
+  { path: "/assets/gsbextranet/GererLesProduits.png", title: "Gestion des Produits - GSBExtranet" },
+  { path: "/assets/gsbextranet/GererLesVisio.png", title: "Gestion des Visioconférences - GSBExtranet" },
+  { path: "/assets/gsbextranet/GererLesMaintenances.png", title: "Gestion des Maintenances - GSBExtranet" },
+  { path: "/assets/gsbextranet/LogsOperations.png", title: "Logs des Opérations - GSBExtranet" },
+  { path: "/assets/gsbextranet/GererMesdonnées.png", title: "Gestion des Données - GSBExtranet" },
+  { path: "/assets/gsbextranet/Auth2Facteur.png", title: "Auth 2 Facteurs - GSBExtranet" },
 ];
 
 const dotgitEnhancedImages: ProjectImage[] = [
-  { path: "/portfolioQL/assets/dotgitEnhanced/dotgitEnhanced(1).png", title: "Interface principale - DotGitEnhanced" },
-  { path: "/portfolioQL/assets/dotgitEnhanced/dotgitEnhanced(2).png", title: "Analyse en masse - DotGitEnhanced" },
-  { path: "/portfolioQL/assets/dotgitEnhanced/dotgitEnhanced(3).png", title: "Scan des domaines - DotGitEnhanced" },
-  { path: "/portfolioQL/assets/dotgitEnhanced/dotgitEnhanced(4).png", title: "Profils d'analyse - DotGitEnhanced" },
-  { path: "/portfolioQL/assets/dotgitEnhanced/dotgitEnhanced(5).png", title: "Fichiers personnalisés - DotGitEnhanced" },
-  { path: "/portfolioQL/assets/dotgitEnhanced/dotgitEnhanced(6).png", title: "Cache des sites analysés - DotGitEnhanced" },
+  { path: "/assets/dotgitEnhanced/dotgitEnhanced(1).png", title: "Interface principale - DotGitEnhanced" },
+  { path: "/assets/dotgitEnhanced/dotgitEnhanced(2).png", title: "Analyse en masse - DotGitEnhanced" },
+  { path: "/assets/dotgitEnhanced/dotgitEnhanced(3).png", title: "Scan des domaines - DotGitEnhanced" },
+  { path: "/assets/dotgitEnhanced/dotgitEnhanced(4).png", title: "Profils d'analyse - DotGitEnhanced" },
+  { path: "/assets/dotgitEnhanced/dotgitEnhanced(5).png", title: "Fichiers personnalisés - DotGitEnhanced" },
+  { path: "/assets/dotgitEnhanced/dotgitEnhanced(6).png", title: "Cache des sites analysés - DotGitEnhanced" },
 ];
 
 const recollRustV2Images: ProjectImage[] = [
-  { path: "/portfolioQL/assets/RecollRustV2/Code_RecollRustV2.png", title: "Code source - RecollRustV2" },
-  { path: "/portfolioQL/assets/RecollRustV2/RecollRustV2_Config.png", title: "Configuration - RecollRustV2" },
-  { path: "/portfolioQL/assets/RecollRustV2/RecollRustV2_Dashboard.png", title: "Dashboard - RecollRustV2" },
-  { path: "/portfolioQL/assets/RecollRustV2/RecollRustV2_Index.png", title: "Indexation - RecollRustV2" },
-  { path: "/portfolioQL/assets/RecollRustV2/RecollRustV2_Search.png", title: "Recherche Full-Text - RecollRustV2" },
+  { path: "/assets/RecollRustV2/Code_RecollRustV2.png", title: "Code source - RecollRustV2" },
+  { path: "/assets/RecollRustV2/RecollRustV2_Config.png", title: "Configuration - RecollRustV2" },
+  { path: "/assets/RecollRustV2/RecollRustV2_Dashboard.png", title: "Dashboard - RecollRustV2" },
+  { path: "/assets/RecollRustV2/RecollRustV2_Index.png", title: "Indexation - RecollRustV2" },
+  { path: "/assets/RecollRustV2/RecollRustV2_Search.png", title: "Recherche Full-Text - RecollRustV2" },
 ];
+
+interface CertModalContent {
+  assetPath: string;
+  url: string;
+  type: 'pdf' | 'image';
+  title: string;
+}
+
+const emptyCertModalContent: CertModalContent = {
+  assetPath: '',
+  url: '',
+  type: 'pdf',
+  title: '',
+};
 
 // Composant pour afficher un niveau de compétence
 const SkillLevel = ({ level, maxLevel = 5 }: { level: number; maxLevel?: number }) => (
@@ -90,7 +106,7 @@ const ToolTag = ({ name }: { name: string }) => (
 const Home: NextPage = () => {
   // États pour les modaux et les galeries
   const [showCertModal, setShowCertModal] = useState(false);
-  const [certModalContent, setCertModalContent] = useState({ url: '', type: '', title: '' });
+  const [certModalContent, setCertModalContent] = useState<CertModalContent>(emptyCertModalContent);
 
   // État pour le modal de raisonnement RecollRustV2
   const [showRecollModal, setShowRecollModal] = useState(false);
@@ -99,6 +115,48 @@ const Home: NextPage = () => {
   const [showGallery, setShowGallery] = useState(false);
   const [currentImages, setCurrentImages] = useState<ProjectImage[]>([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  const resolveReachableAssetUrl = async (assetPath: string) => {
+    const candidates = getAssetCandidates(assetPath);
+
+    for (const candidate of candidates) {
+      try {
+        const response = await fetch(candidate, { method: 'HEAD', cache: 'no-store' });
+
+        if (response.ok) {
+          return candidate;
+        }
+
+        if (response.status === 405) {
+          const fallbackResponse = await fetch(candidate, {
+            method: 'GET',
+            headers: { Range: 'bytes=0-0' },
+            cache: 'no-store',
+          });
+
+          if (fallbackResponse.ok) {
+            return candidate;
+          }
+        }
+      } catch (error) {
+        console.error(`Impossible de verifier l'asset "${candidate}"`, error);
+      }
+    }
+
+    console.error(`Aucun asset accessible trouve pour "${assetPath}"`, candidates);
+    return getPreferredAssetPath(assetPath);
+  };
+
+  const downloadCv = async () => {
+    const cvUrl = await resolveReachableAssetUrl('/Quentin_Leroy_CV.pdf');
+    const downloadLink = document.createElement('a');
+
+    downloadLink.href = cvUrl;
+    downloadLink.download = 'Quentin_Leroy_CV.pdf';
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  };
 
   // Fonction pour ouvrir la galerie avec les images du projet spécifié
   const openGallery = (e: React.MouseEvent, images: ProjectImage[]) => {
@@ -125,15 +183,18 @@ const Home: NextPage = () => {
   };
 
   // Fonction d'ouverture du modal de certification
-  const openCertModal = (e: React.MouseEvent, url: string, type: 'pdf' | 'image', title: string) => {
+  const openCertModal = async (e: React.MouseEvent, assetPath: string, type: 'pdf' | 'image', title: string) => {
     e.preventDefault();
-    setCertModalContent({ url, type, title });
+    const url = await resolveReachableAssetUrl(assetPath);
+
+    setCertModalContent({ assetPath, url, type, title });
     setShowCertModal(true);
   };
 
   // Fonction de fermeture du modal de certification
   const closeCertModal = () => {
     setShowCertModal(false);
+    setCertModalContent(emptyCertModalContent);
   };
 
   return (
@@ -180,8 +241,9 @@ const Home: NextPage = () => {
             </div>
 
             <div className="flex items-center justify-center w-full h-full">
-              <img
-                src={currentImages[currentImageIndex].path}
+              <ResilientImage
+                key={currentImages[currentImageIndex].path}
+                assetPath={currentImages[currentImageIndex].path}
                 alt={currentImages[currentImageIndex].title}
                 className="rounded-lg max-h-[95vh] max-w-[95vw] w-auto h-auto mx-auto object-contain shadow-lg"
                 onClick={(e) => e.stopPropagation()}
@@ -216,15 +278,26 @@ const Home: NextPage = () => {
                     title={certModalContent.title}
                   >
                     <iframe
-                      src={`https://docs.google.com/gview?url=${encodeURIComponent(window.location.origin + certModalContent.url)}&embedded=true`}
+                      src={`https://docs.google.com/gview?url=${encodeURIComponent(new URL(certModalContent.url, window.location.origin).toString())}&embedded=true`}
                       className="w-full h-full"
                       title={certModalContent.title}
                     ></iframe>
                   </object>
+                  <div className="border-t border-gray-200 dark:border-gray-700 px-4 py-3">
+                    <a
+                      href={certModalContent.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-700 font-medium"
+                    >
+                      Ouvrir le PDF dans un nouvel onglet
+                    </a>
+                  </div>
                 </div>
               ) : (
-                <img
-                  src={certModalContent.url}
+                <ResilientImage
+                  key={certModalContent.assetPath}
+                  assetPath={certModalContent.assetPath}
                   alt={certModalContent.title}
                   className="max-h-[80vh] max-w-full mx-auto object-contain"
                 />
@@ -437,14 +510,15 @@ const Home: NextPage = () => {
               </span>
             </div>
             <div className="flex flex-wrap justify-center gap-6 pt-6">
-              <a href="/portfolioQL/Quentin_Leroy_CV.pdf"
-                download="Quentin_Leroy_CV.pdf"
+              <button
+                type="button"
+                onClick={() => { void downloadCv(); }}
                 className="btn bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-500/20 px-8 py-4 text-lg font-medium rounded-xl flex items-center gap-3">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
                 Télécharger mon CV
-              </a>
+              </button>
               <a href="https://www.linkedin.com/in/quentin-leroy62/"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -801,7 +875,7 @@ const Home: NextPage = () => {
               <div className="mt-4 space-y-2">
                 <a
                   href="#"
-                  onClick={(e) => openCertModal(e, "/portfolioQL/assets/certif-proof/Anssi/AnssiSecNum.pdf", "pdf", "Certification ANSSI SecNumAcadémie")}
+                  onClick={(e) => { void openCertModal(e, "/assets/certif-proof/Anssi/AnssiSecNum.pdf", "pdf", "Certification ANSSI SecNumAcadémie"); }}
                   className="text-blue-600 hover:text-blue-700 flex items-center gap-2"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -826,7 +900,7 @@ const Home: NextPage = () => {
               <div className="mt-4 space-y-2">
                 <a
                   href="#"
-                  onClick={(e) => openCertModal(e, "/portfolioQL/assets/certif-proof/root-me/Root-ME1.pdf", "pdf", "Certification Root-Me 1")}
+                  onClick={(e) => { void openCertModal(e, "/assets/certif-proof/root-me/Root-ME1.pdf", "pdf", "Certification Root-Me 1"); }}
                   className="text-blue-600 hover:text-blue-700 flex items-center gap-2"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -836,7 +910,7 @@ const Home: NextPage = () => {
                 </a>
                 <a
                   href="#"
-                  onClick={(e) => openCertModal(e, "/portfolioQL/assets/certif-proof/root-me/Root-ME2.pdf", "pdf", "Certification Root-Me 2")}
+                  onClick={(e) => { void openCertModal(e, "/assets/certif-proof/root-me/Root-ME2.pdf", "pdf", "Certification Root-Me 2"); }}
                   className="text-blue-600 hover:text-blue-700 flex items-center gap-2"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -846,7 +920,7 @@ const Home: NextPage = () => {
                 </a>
                 <a
                   href="#"
-                  onClick={(e) => openCertModal(e, "/portfolioQL/assets/certif-proof/root-me/root-meClassGlobal.png", "image", "Classement global Root-Me")}
+                  onClick={(e) => { void openCertModal(e, "/assets/certif-proof/root-me/root-meClassGlobal.png", "image", "Classement global Root-Me"); }}
                   className="text-blue-600 hover:text-blue-700 flex items-center gap-2"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -856,7 +930,7 @@ const Home: NextPage = () => {
                 </a>
                 <a
                   href="#"
-                  onClick={(e) => openCertModal(e, "/portfolioQL/assets/certif-proof/root-me/root-meClassCerta.png", "image", "Classement CertaPro Root-Me")}
+                  onClick={(e) => { void openCertModal(e, "/assets/certif-proof/root-me/root-meClassCerta.png", "image", "Classement CertaPro Root-Me"); }}
                   className="text-blue-600 hover:text-blue-700 flex items-center gap-2"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -880,7 +954,7 @@ const Home: NextPage = () => {
               <div className="mt-4 space-y-2">
                 <a
                   href="#"
-                  onClick={(e) => openCertModal(e, "/portfolioQL/assets/certif-proof/pix/certification-pix-20250306.pdf", "pdf", "Certification PIX")}
+                  onClick={(e) => { void openCertModal(e, "/assets/certif-proof/pix/certification-pix-20250306.pdf", "pdf", "Certification PIX"); }}
                   className="text-blue-600 hover:text-blue-700 flex items-center gap-2"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -904,7 +978,7 @@ const Home: NextPage = () => {
               <div className="mt-4 space-y-2">
                 <a
                   href="#"
-                  onClick={(e) => openCertModal(e, "/portfolioQL/assets/certif-proof/cnil/Module1.pdf", "pdf", "Module 1 - Introduction au RGPD")}
+                  onClick={(e) => { void openCertModal(e, "/assets/certif-proof/cnil/Module1.pdf", "pdf", "Module 1 - Introduction au RGPD"); }}
                   className="text-blue-600 hover:text-blue-700 flex items-center gap-2"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -914,7 +988,7 @@ const Home: NextPage = () => {
                 </a>
                 <a
                   href="#"
-                  onClick={(e) => openCertModal(e, "/portfolioQL/assets/certif-proof/cnil/Module2.pdf", "pdf", "Module 2 - Principes du RGPD")}
+                  onClick={(e) => { void openCertModal(e, "/assets/certif-proof/cnil/Module2.pdf", "pdf", "Module 2 - Principes du RGPD"); }}
                   className="text-blue-600 hover:text-blue-700 flex items-center gap-2"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -924,7 +998,7 @@ const Home: NextPage = () => {
                 </a>
                 <a
                   href="#"
-                  onClick={(e) => openCertModal(e, "/portfolioQL/assets/certif-proof/cnil/Module3.pdf", "pdf", "Module 3 - Responsabilités")}
+                  onClick={(e) => { void openCertModal(e, "/assets/certif-proof/cnil/Module3.pdf", "pdf", "Module 3 - Responsabilités"); }}
                   className="text-blue-600 hover:text-blue-700 flex items-center gap-2"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -934,7 +1008,7 @@ const Home: NextPage = () => {
                 </a>
                 <a
                   href="#"
-                  onClick={(e) => openCertModal(e, "/portfolioQL/assets/certif-proof/cnil/Module4.pdf", "pdf", "Module 4 - Droits des personnes")}
+                  onClick={(e) => { void openCertModal(e, "/assets/certif-proof/cnil/Module4.pdf", "pdf", "Module 4 - Droits des personnes"); }}
                   className="text-blue-600 hover:text-blue-700 flex items-center gap-2"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -944,7 +1018,7 @@ const Home: NextPage = () => {
                 </a>
                 <a
                   href="#"
-                  onClick={(e) => openCertModal(e, "/portfolioQL/assets/certif-proof/cnil/Module5.pdf", "pdf", "Module 5 - Sécurité des données")}
+                  onClick={(e) => { void openCertModal(e, "/assets/certif-proof/cnil/Module5.pdf", "pdf", "Module 5 - Sécurité des données"); }}
                   className="text-blue-600 hover:text-blue-700 flex items-center gap-2"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

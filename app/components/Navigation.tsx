@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 const Navigation: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -46,7 +47,7 @@ const Navigation: React.FC = () => {
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex justify-between items-center py-4">
           <div>
-            <a href="/" className="text-xl font-bold text-blue-600">QL</a>
+            <Link href="/" className="text-xl font-bold text-blue-600">QL</Link>
           </div>
 
           <nav className="hidden md:block">
