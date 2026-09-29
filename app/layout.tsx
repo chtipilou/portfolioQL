@@ -1,38 +1,35 @@
-import type { Metadata, Viewport } from "next";
 import { Inter } from 'next/font/google';
-import "./globals.css";
+import './globals.css';
 
-// Optimisation de la police - préchargement...
+export { metadata } from './metadata';
+export { viewport } from './viewport';
+
 const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
   preload: true,
+  variable: '--font-inter',
 });
 
-export const metadata: Metadata = {
-  title: "Quentin Leroy - Portfolio",
-  description: "Portfolio professionnel de Quentin Leroy",
-};
+/**
+ * Applique le thème avant le premier paint : sans ça la page s'affiche en clair
+ * puis bascule en sombre (flash) puisque la préférence vit dans localStorage.
+ */
+const THEME_BOOTSTRAP = `
+try {
+  var t = localStorage.getItem('theme');
+  if (t === 'dark' || (!t && matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.documentElement.classList.add('dark');
+  }
+} catch (e) {}
+`;
 
-// Définition du viewport (Next.js 14)
-export const viewport: Viewport = {
-  width: "device-width",
-  initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f9fafb" },
-    { media: "(prefers-color-scheme: dark)", color: "#111827" },
-  ],
-};
-
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr" className="scroll-smooth" suppressHydrationWarning>
+    <html lang="fr" className={`scroll-smooth ${inter.variable}`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOTSTRAP }} />
+      </head>
       <body className={`${inter.className} antialiased`} suppressHydrationWarning>
         {children}
       </body>

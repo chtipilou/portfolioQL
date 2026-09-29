@@ -1,109 +1,61 @@
-# Portfolio de Quentin Leroy
+# Portfolio — Quentin Leroy
 
-Portfolio personnel développé avec Next.js 14 et TypeScript, optimisé pour GitHub Pages.
+Portfolio personnel construit avec Next.js 16 (App Router) et Tailwind CSS,
+déployé en export statique sur GitHub Pages.
 
-## 🚀 Fonctionnalités
+👉 https://chtipilou.github.io/portfolioQL
 
-- **Design responsive** avec Tailwind CSS
-- **Mode sombre/clair** automatique
-- **Galerie d'images** pour les projets
-- **Visualisation des PDFs** intégrée (sauf CV qui se télécharge)
-- **Animations fluides** et effets visuels légers
-- **Optimisé pour GitHub Pages**
-- **Arrière-plan interactif** (souris + explosion au clic)
-
-## 🛠️ Technologies
-
-- **Next.js 14** (App Router)
-- **TypeScript**
-- **Tailwind CSS**
-- **React 18**
-- **GitHub Pages** (déploiement automatique)
-
-## 📋 Corrections récentes
-
-1. **Affichage des PDFs** : Les PDFs s'affichent maintenant dans un modal au lieu de se télécharger (sauf le CV)
-2. **Root-ME2.pdf ajouté** : Nouvelle certification disponible dans la section certifications
-3. **Texte mis à jour** : Recherche d'alternance 2026-2028 en cybersécurité
-4. **Expériences enrichies** : Alternance Groupe Atlantic YGNIS + centre de loisirs
-5. **Compétences refondues** : niveaux /5, outils cyber & SysOps détaillés
-6. **Formation mise à jour** : Bachelor SysOps (EPSI Lille)
-7. **Arrière-plan optimisé** : rendu plus clair, interactions souris et explosion au clic
-8. **Configuration GitHub Pages** : Optimisée pour le déploiement automatique
-
-## Installation
+## Démarrer
 
 ```bash
-# Cloner le dépôt
-git clone https://github.com/chtipilou/portfolioQL.git
-cd portfolioQL
-
-# Installer les dépendances
-node clean-start.js
+npm install
+npm run dev          # http://localhost:3000
 ```
 
-## Développement
+## Build
 
 ```bash
-# Lancer le serveur de développement
-npm run dev
+npm run build                    # build dynamique (routes API actives)
+STATIC_EXPORT=true npm run build # export statique -> out/
 ```
 
-Le site sera accessible à l'adresse [http://localhost:3000](http://localhost:3000)
+L'export statique ne supporte pas les routes API : la CI supprime `app/api/`
+avant de builder (voir `.github/workflows/deploy.yml`). Le formulaire de contact
+bascule automatiquement sur un lien `mailto:` dans ce mode.
 
-## Déploiement
-
-Le site est automatiquement déployé sur GitHub Pages via GitHub Actions.
-
-### GitHub Pages (Automatique)
-1. Push vers la branche `main`
-2. GitHub Actions build et deploy automatiquement
-3. Site accessible sur `https://chtipilou.github.io/portfolioQL/`
-
-### Build local
-```bash
-npm run build
-```
-
-> ⚠️ Next.js nécessite **Node.js >= 20.9** pour le build CI.
-
-## 🎯 Optimisations GitHub Pages
-
-- **Export statique** : Génération de fichiers HTML/CSS/JS statiques
-- **Chemins absolus** : Configuration basePath pour GitHub Pages
-- **Images non optimisées** : Compatibilité export statique
-- **Suppression API routes** : Automatique lors du build GitHub Pages
-- **Interactions légères** : Animations allégées pour limiter l'usage CPU
-
-## Structure du projet
+## Structure
 
 ```
 app/
-├── components/           # Composants React
-│   ├── Navigation.tsx   # Navigation principale
-│   └── ...
-├── api/                 # API Routes (uniquement en local)
-│   └── send-mail/
-├── page.tsx            # Page principale
-└── layout.tsx          # Layout global
-
-public/
-├── assets/             # Images et ressources
-│   ├── certif-proof/   # Certificats
-│   ├── projects/       # Screenshots projets
-│   └── ...
-└── Quentin_Leroy_CV.pdf
-
-.github/workflows/      # Actions GitHub
-└── deploy.yml         # Déploiement automatique
+  (main)/page.tsx          Composition des sections
+  (admin)/who              Page privée de consultation des visites
+  api/                     Routes API (build dynamique uniquement)
+  components/
+    sections/              Hero, Projects, Skills, Certifications, Timeline
+    Gallery.tsx            Visionneuse plein écran (portal + chargement paresseux)
+    ProjectCard.tsx        Carte projet avec vignette
+    Navigation.tsx         Nav + bascule de thème
+    ScrollReveal.tsx       Révélation au scroll (IntersectionObserver)
+  data/                    Contenu : projects, skills, certifications, timeline
+  lib/assets.ts            Préfixage basePath des chemins d'assets
+public/assets/<projet>/    Captures d'écran
 ```
 
-## 📧 Contact
+Le contenu vit dans `app/data/` : ajouter un projet ou une compétence se fait
+en éditant ces fichiers, sans toucher au JSX.
 
-- **Email** : quentinleroy62131@outlook.fr
-- **LinkedIn** : [Quentin Leroy](https://www.linkedin.com/in/quentin-leroy62/)
-- **GitHub** : [chtipilou](https://github.com/chtipilou)
+## Ajouter un projet
 
-## 📜 Licence
+1. Placer les captures dans `public/assets/<dossier>/`, au format
+   `<slug>.webp` (max 1920 px de large) **et** `<slug>-thumb.webp` (720 px).
+2. Ajouter une entrée dans `app/data/projects.ts`.
 
-Projet personnel - Tous droits réservés
+`cover` permet de choisir la vignette de la carte quand la première capture
+cadre mal en bandeau.
+
+## Chemins d'assets
+
+`basePath` ne préfixe que `next/image` et `Link`, pas les `<img src>` bruts.
+Tous les chemins d'assets passent donc par `asset()` de `app/lib/assets.ts`,
+ce qui garde `next dev` (sans basePath) et GitHub Pages (`/portfolioQL`)
+fonctionnels avec les mêmes données.

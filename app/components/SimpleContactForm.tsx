@@ -14,6 +14,11 @@ const SimpleContactForm: React.FC = () => {
   });
   const [formStatus, setFormStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
+  // L'export statique n'embarque aucune route API : le formulaire bascule alors
+  // sur un lien mailto. On se fie au drapeau de build, pas au nom d'hôte — sinon
+  // le POST partirait dans le vide derrière un domaine personnalisé.
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH?.trim() ?? '';
+  const isStaticExport = basePath !== '';
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -25,43 +30,36 @@ const SimpleContactForm: React.FC = () => {
     setFormStatus('loading');
 
     const { name, email, message } = formData;
-    
-    // Si aucun champ n'est rempli
+
     if (!name || !email || !message) {
       setFormStatus('error');
       setErrorMessage("Tous les champs sont requis");
       return;
     }
-    
+
     try {
-      // Pour GitHub Pages, nous utilisons un service externe comme Formspree
-      // ou directement un mailto avec les données pré-remplies
-      const isGitHubPages = window.location.hostname.includes('github.io');
-      
-      if (isGitHubPages) {
-        // Pour GitHub Pages : générer un email avec les données
+      if (isStaticExport) {
         const subject = `Message de contact portfolio - ${name}`;
         const body = `Nom: ${name}%0A` +
-                    `Email: ${email}%0A%0A` +
-                    `Message: ${message}%0A%0A` +
-                    `----%0A` +
-                    `Envoyé depuis le portfolio le ${new Date().toLocaleDateString()}`;
-        
+          `Email: ${email}%0A%0A` +
+          `Message: ${message}%0A%0A` +
+          `----%0A` +
+          `Envoyé depuis le portfolio le ${new Date().toLocaleDateString()}`;
+
         const mailtoUrl = `mailto:quentinleroy62131@outlook.fr?subject=${encodeURIComponent(subject)}&body=${body}`;
         window.open(mailtoUrl);
-        
+
         setFormStatus('success');
         setFormData({ name: '', email: '', message: '' });
-        
+
         setTimeout(() => {
           setFormStatus('idle');
         }, 5000);
-        
+
         return;
       }
-      
-      // Appel direct à l'API locale pour les déploiements dynamiques
-      const response = await fetch('/api/send-mail', {
+
+      const response = await fetch(`${basePath}/api/send-mail`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -70,14 +68,13 @@ const SimpleContactForm: React.FC = () => {
           name,
           email,
           message,
-          timestamp: new Date().toISOString() // horodatage
+          timestamp: new Date().toISOString()
         }),
       });
-      
+
       const data = await response.json();
-      
+
       if (!response.ok) {
-        // Rate limiting et blacklist 403
         if (response.status === 429) {
           throw new Error("Limite d'envoi atteinte. Veuillez réessayer plus tard.");
         } else if (response.status === 403) {
@@ -86,15 +83,14 @@ const SimpleContactForm: React.FC = () => {
           throw new Error(data.message || "Erreur lors de l'envoi");
         }
       }
-      
-      // Réinitialiser le formulaire après succès
+
       setFormStatus('success');
       setFormData({ name: '', email: '', message: '' });
-      
+
       setTimeout(() => {
         setFormStatus('idle');
       }, 5000);
-      
+
     } catch (error) {
       console.error('Erreur:', error);
       setFormStatus('error');
@@ -103,38 +99,38 @@ const SimpleContactForm: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl mx-auto p-8 rounded-xl shadow-lg bg-white/80 dark:bg-gray-800/80">
+    <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl mx-auto p-8 rounded-xl shadow-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
       {formStatus === 'success' && (
         <div className="bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 text-green-800 dark:text-green-200 p-4 rounded-lg">
           <p>
-            {window.location.hostname.includes('github.io') 
-              ? "Votre client email va s'ouvrir avec le message pré-rempli. Envoyez-le pour me contacter !" 
+            {isStaticExport
+              ? "Votre client email va s'ouvrir avec le message pré-rempli. Envoyez-le pour me contacter !"
               : "Message envoyé avec succès! Je le recevrai directement dans ma boîte mail."
             }
           </p>
         </div>
       )}
-      
+
       {formStatus === 'error' && (
         <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-200 p-4 rounded-lg">
           <p>{errorMessage}</p>
-          <p className="text-sm mt-2">Alternative: contactez-moi directement à <a href="mailto:quentinleroy62131@outlook.fr" className="underline">quentinleroy62131@outlook.fr (GitHub bloque les appels d'API. Le formulaire fonctionnera dès que je le mettrai sur un vrai domaine. Merci de votre compréhension.)</a></p>
+          <p className="text-sm mt-2">Alternative: contactez-moi directement à <a href="mailto:quentinleroy62131@outlook.fr" className="underline">quentinleroy62131@outlook.fr</a></p>
         </div>
       )}
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-2">
           <label htmlFor="name" className="text-sm font-medium text-gray-700 dark:text-gray-300">
             Nom <span className="text-xs text-gray-500">({formData.name.length}/{MAX_NAME_LENGTH})</span>
           </label>
-          <input 
-            type="text" 
-            id="name" 
+          <input
+            type="text"
+            id="name"
             name="name"
             value={formData.name}
             onChange={handleChange}
             className="w-full p-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl
-                     focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all" 
+                     focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
             disabled={formStatus === 'loading'}
             maxLength={MAX_NAME_LENGTH}
             required
@@ -144,14 +140,14 @@ const SimpleContactForm: React.FC = () => {
           <label htmlFor="email" className="text-sm font-medium text-gray-700 dark:text-gray-300">
             Email <span className="text-xs text-gray-500">({formData.email.length}/{MAX_EMAIL_LENGTH})</span>
           </label>
-          <input 
-            type="email" 
+          <input
+            type="email"
             id="email"
             name="email"
             value={formData.email}
             onChange={handleChange}
             className="w-full p-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl
-                     focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all" 
+                     focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
             disabled={formStatus === 'loading'}
             maxLength={MAX_EMAIL_LENGTH}
             required
@@ -163,7 +159,7 @@ const SimpleContactForm: React.FC = () => {
         <label htmlFor="message" className="text-sm font-medium text-gray-700 dark:text-gray-300">
           Message <span className="text-xs text-gray-500">({formData.message.length}/{MAX_MESSAGE_LENGTH})</span>
         </label>
-        <textarea 
+        <textarea
           id="message"
           name="message"
           rows={4}
@@ -176,9 +172,9 @@ const SimpleContactForm: React.FC = () => {
           required
         ></textarea>
       </div>
-      
-      <button 
-        type="submit" 
+
+      <button
+        type="submit"
         disabled={formStatus === 'loading'}
         className="w-full bg-gradient-to-r from-blue-600 to-blue-500 text-white py-3 px-6 rounded-xl
                  hover:from-blue-700 hover:to-blue-600 transition-all duration-200 shadow-lg shadow-blue-500/20
@@ -194,7 +190,7 @@ const SimpleContactForm: React.FC = () => {
           </span>
         ) : "Envoyer"}
       </button>
-      
+
       <p className="text-xs text-center text-gray-500 dark:text-gray-400 mt-2">
         Je vous répondrai dans les plus brefs délais. Merci!
       </p>
