@@ -26,7 +26,7 @@ const BackgroundEffect = () => {
     isSmallScreenRef.current = isSmall;
 
     const area = Math.max(1, width * height);
-    const density = isSmall ? 90000 : 70000; // plus élevé = moins de points
+    const density = isSmall ? 90000 : 70000;
     const pointCount = Math.max(16, Math.min(60, Math.floor(area / density)));
 
     return {
@@ -66,29 +66,27 @@ const BackgroundEffect = () => {
     const handleResize = () => {
       const rect = canvas.getBoundingClientRect();
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      
+
       canvasWidth = Math.floor(rect.width);
       canvasHeight = Math.floor(rect.height);
-      
-      // Rendu net via device pixel ratio
+
       canvas.width = canvasWidth * dpr;
       canvas.height = canvasHeight * dpr;
       canvas.style.width = canvasWidth + 'px';
       canvas.style.height = canvasHeight + 'px';
-      
+
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      
-      // Reconfigurer pour la nouvelle taille d'écran
+
       config = getConfig(canvasWidth, canvasHeight);
       FRAME_INTERVAL = 1000 / config.FPS_TARGET;
       connectionDistanceSquared = config.CONNECTION_DISTANCE * config.CONNECTION_DISTANCE;
       mouseRadiusSquared = config.MOUSE_RADIUS * config.MOUSE_RADIUS;
-      
+
       initPoints();
     };
 
     handleResize();
-    
+
     let resizeTimeout: ReturnType<typeof setTimeout> | null = null;
     const handleThrottledResize = () => {
       if (resizeTimeout) return;
@@ -97,16 +95,14 @@ const BackgroundEffect = () => {
         resizeTimeout = null;
       }, 150);
     };
-    
+
     window.addEventListener('resize', handleThrottledResize, { passive: true });
 
-    // Observer la visibilité
     const handleVisibilityChange = () => {
       isVisibleRef.current = document.visibilityState === 'visible';
     };
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
-    // Gestion de la souris avec throttle
     let lastMouseMove = 0;
     const handleMouseMove = (e: MouseEvent) => {
       const now = performance.now();
@@ -116,13 +112,16 @@ const BackgroundEffect = () => {
     };
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
 
-    // Explosion au clic
+    // BUG-5: Only trigger burst on clicks that are NOT on interactive elements
     const handleClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const isInteractive = target.closest('button, a, input, textarea, select, [role="button"], [tabindex]');
+      if (isInteractive) return;
+
       burstRef.current = { x: e.clientX, y: e.clientY, active: true, power: 260 };
     };
     window.addEventListener('click', handleClick, { passive: true });
 
-    // Animation optimisée
     const animate = (timestamp: number) => {
       if (!isVisibleRef.current) {
         frameRef.current = requestAnimationFrame(animate);
@@ -134,18 +133,17 @@ const BackgroundEffect = () => {
         frameRef.current = requestAnimationFrame(animate);
         return;
       }
-      
+
       lastFrameTimeRef.current = timestamp - (elapsed % FRAME_INTERVAL);
-      
+
       ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-      
+
       const points = pointsRef.current;
       const len = points.length;
-      
-      // Mise à jour des positions
+
       for (let i = 0; i < len; i++) {
         const point = points[i];
-        
+
         point.x += point.vx;
         point.y += point.vy;
 
@@ -155,7 +153,6 @@ const BackgroundEffect = () => {
         point.x = Math.max(0, Math.min(canvasWidth, point.x));
         point.y = Math.max(0, Math.min(canvasHeight, point.y));
 
-        // Réaction à la souris
         const mdx = mouseRef.current.x - point.x;
         const mdy = mouseRef.current.y - point.y;
         const mdistSq = mdx * mdx + mdy * mdy;
@@ -167,7 +164,6 @@ const BackgroundEffect = () => {
           point.vy += (mdy / mdist) * force;
         }
 
-        // Explosion au clic
         if (burstRef.current.active) {
           const bdx = point.x - burstRef.current.x;
           const bdy = point.y - burstRef.current.y;
@@ -180,7 +176,6 @@ const BackgroundEffect = () => {
           }
         }
 
-        // Limiter la vitesse
         const speedSq = point.vx * point.vx + point.vy * point.vy;
         const maxSpeed = burstRef.current.active ? config.POINT_SPEED * 3 : config.POINT_SPEED;
         if (speedSq > maxSpeed * maxSpeed) {
@@ -197,7 +192,6 @@ const BackgroundEffect = () => {
         }
       }
 
-      // Dessiner les connexions en batch (limitées par point)
       ctx.beginPath();
       ctx.strokeStyle = 'rgba(59, 130, 246, 0.18)';
       ctx.lineWidth = 1;
@@ -221,7 +215,6 @@ const BackgroundEffect = () => {
       }
       ctx.stroke();
 
-      // Dessiner les points en batch
       ctx.beginPath();
       ctx.fillStyle = 'rgba(59, 130, 246, 0.55)';
       for (let i = 0; i < len; i++) {
@@ -254,6 +247,7 @@ const BackgroundEffect = () => {
       ref={canvasRef}
       className="fixed inset-0 w-full h-full pointer-events-none z-0"
       style={{ imageRendering: 'auto' }}
+      aria-hidden="true"
     />
   );
 };

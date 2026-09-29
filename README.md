@@ -1,4 +1,4 @@
-# Portfolio — Quentin Leroy
+# Portfolio de Quentin Leroy
 
 Portfolio personnel construit avec Next.js 16 (App Router) et Tailwind CSS,
 déployé en export statique sur GitHub Pages.

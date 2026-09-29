@@ -1,34 +1,38 @@
 import React from 'react';
 import { getPreferredAssetPath } from '../../lib/asset-paths';
+import { profiles } from '../../data/profiles';
 
-const stats = [
-  { value: '2', label: 'applications métier livrées' },
-  { value: '4', label: 'certifications validées' },
-  { value: '7', label: 'projets présentés' },
-];
+const GithubIcon = () => (
+  <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58v-2.23c-3.34.73-4.04-1.42-4.04-1.42-.54-1.38-1.33-1.75-1.33-1.75-1.09-.75.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.81 1.3 3.49 1 .11-.78.42-1.31.76-1.6-2.67-.31-5.47-1.34-5.47-5.94 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6.01 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.66.25 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.61-2.81 5.62-5.48 5.92.43.37.82 1.1.82 2.22v3.29c0 .32.22.7.83.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z" />
+  </svg>
+);
 
 export default function Hero() {
   return (
-    <section
-      id="accueil"
-      className="mb-24 flex min-h-[85vh] flex-col justify-center py-12"
-    >
+    <section id="accueil" className="mb-24 flex min-h-[85vh] flex-col justify-center py-12">
       <div className="animate-fade-in text-center">
-        <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-1.5 text-sm font-medium text-blue-700 dark:border-blue-500/25 dark:bg-blue-500/10 dark:text-blue-300">
+        <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-1.5 text-sm font-medium text-blue-700 dark:border-blue-500/25 dark:bg-blue-500/10 dark:text-blue-300">
           <span className="relative flex h-2 w-2">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-500 opacity-70" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-blue-500" />
           </span>
-          Recherche alternance 2026-2028 en cybersécurité
+          Ouvert aux opportunités en cybersécurité
         </p>
 
-        <h1 className="mb-4 bg-gradient-to-r from-blue-700 via-blue-500 to-cyan-500 bg-clip-text text-5xl font-bold tracking-tight text-transparent sm:text-6xl lg:text-7xl">
+        <h1 className="mb-3 bg-gradient-to-r from-blue-700 via-blue-500 to-cyan-500 bg-clip-text text-5xl font-bold tracking-tight text-transparent sm:text-6xl lg:text-7xl">
           Quentin Leroy
         </h1>
 
-        <p className="mx-auto mb-6 max-w-2xl text-lg text-gray-600 dark:text-gray-300 sm:text-xl">
-          Développeur d’applications métier en alternance chez Groupe Atlantic, spécialisé en
-          sécurité offensive et administration système.
+        <p className="mb-6 text-xl font-medium text-gray-700 dark:text-gray-200 sm:text-2xl">
+          Cybersécurité
+        </p>
+
+        <p className="mx-auto mb-6 max-w-2xl text-base leading-relaxed text-gray-600 dark:text-gray-300 sm:text-lg">
+          Je m&apos;appuie sur un socle en développement et en administration systèmes pour
+          comprendre les applications et les infrastructures que je teste. Chercheur en sécurité
+          indépendant, je repère des failles web en bug bounty et je rédige des rapports
+          directement exploitables.
         </p>
 
         <p className="mb-8 flex items-center justify-center gap-2 text-gray-500 dark:text-gray-400">
@@ -41,10 +45,10 @@ export default function Hero() {
             />
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
           </svg>
-          Béthune — 62400
+          Béthune, 62400
         </p>
 
-        <div className="mb-14 flex flex-wrap justify-center gap-3">
+        <div className="mb-10 flex flex-wrap justify-center gap-3">
           <a
             href={getPreferredAssetPath('/Quentin_Leroy_CV.pdf')}
             download="Quentin_Leroy_CV.pdf"
@@ -77,29 +81,46 @@ export default function Hero() {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2.5 rounded-xl bg-gray-900 px-6 py-3.5 font-medium text-white transition-colors hover:bg-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600"
           >
-            <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58v-2.23c-3.34.73-4.04-1.42-4.04-1.42-.54-1.38-1.33-1.75-1.33-1.75-1.09-.75.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.81 1.3 3.49 1 .11-.78.42-1.31.76-1.6-2.67-.31-5.47-1.34-5.47-5.94 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6.01 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.66.25 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.61-2.81 5.62-5.48 5.92.43.37.82 1.1.82 2.22v3.29c0 .32.22.7.83.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z" />
-            </svg>
+            <GithubIcon />
             GitHub
           </a>
         </div>
 
-        <dl className="mx-auto grid max-w-2xl grid-cols-3 gap-4">
-          {stats.map(({ value, label }) => (
-            <div
-              key={label}
-              className="rounded-xl border border-gray-200 bg-white/70 px-3 py-4 backdrop-blur-sm dark:border-gray-700 dark:bg-gray-800/60"
-            >
-              <dt className="sr-only">{label}</dt>
-              <dd>
-                <span className="block text-3xl font-bold text-blue-600 dark:text-blue-400">{value}</span>
-                <span className="mt-1 block text-xs leading-tight text-gray-500 dark:text-gray-400">
-                  {label}
-                </span>
-              </dd>
-            </div>
-          ))}
-        </dl>
+        {/* Profils de recherche en sécurité */}
+        <div className="mx-auto max-w-2xl">
+          <p className="mb-3 text-xs font-medium uppercase tracking-wider text-gray-400 dark:text-gray-500">
+            Recherche en sécurité
+          </p>
+          <ul className="flex flex-wrap justify-center gap-2.5">
+            {profiles.map((p) => (
+              <li key={p.id}>
+                <a
+                  href={p.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white/80 px-4 py-2 text-sm transition-colors hover:border-blue-400 hover:bg-white dark:border-gray-700 dark:bg-gray-800/70 dark:hover:border-blue-500"
+                >
+                  <span className={`font-semibold ${p.tone}`}>{p.label}</span>
+                  <span className="text-gray-400 dark:text-gray-500">{p.handle}</span>
+                  <svg
+                    className="h-3.5 w-3.5 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    aria-hidden
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M10 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4M14 4h6m0 0v6m0-6L10 14"
+                    />
+                  </svg>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </section>
   );

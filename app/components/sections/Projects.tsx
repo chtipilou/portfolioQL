@@ -12,7 +12,7 @@ export default function Projects() {
     <section id="projets" className="mb-20 reveal">
       <h2 className="section-title">Projets</h2>
       <p className="-mt-4 mb-8 max-w-2xl text-gray-600 dark:text-gray-300">
-        Applications métier livrées en alternance et outils de sécurité développés en autonomie.
+        Applications métier livrées en entreprise et outils de sécurité développés en autonomie.
       </p>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">

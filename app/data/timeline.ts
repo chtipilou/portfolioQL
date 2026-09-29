@@ -19,9 +19,8 @@ export const education: Education[] = [
 
 export const experiences: Experience[] = [
   {
-    title: 'Alternance — Groupe Atlantic YGNIS',
+    title: 'Alternance, Groupe Atlantic YGNIS',
     period: 'Octobre 2025 - Septembre 2026',
-    current: true,
     tasks: [
       'Portage du projet TRS Web, application de suivi de production',
       'Refonte complète de l’application AKAO, plateforme de réapprovisionnement interne',
@@ -30,7 +29,7 @@ export const experiences: Experience[] = [
     ],
   },
   {
-    title: 'Animateur — Centre de loisirs',
+    title: 'Animateur, centre de loisirs',
     period: 'Juillet 2025',
     tasks: [
       'Encadrement et animation d’activités pour enfants',
@@ -38,7 +37,7 @@ export const experiences: Experience[] = [
     ],
   },
   {
-    title: 'Stage — SNCF Euratechnologies',
+    title: 'Stage, SNCF Euratechnologies',
     period: 'Janvier - Février 2025',
     tasks: [
       'Collaboration avec des experts, architectes et administrateurs',
@@ -55,7 +54,7 @@ export const experiences: Experience[] = [
     ],
   },
   {
-    title: 'Stage — Hôpital de Beuvry Béthune',
+    title: 'Stage, centre hospitalier de Beuvry Béthune',
     period: 'Mai - Juin 2024',
     tasks: [
       'Optimisation des systèmes informatiques',
@@ -64,7 +63,7 @@ export const experiences: Experience[] = [
     ],
   },
   {
-    title: 'Stage — Pharmaceutique',
+    title: 'Stage, pharmacie',
     period: 'Janvier 2019',
     tasks: [
       'Organisation des rayons',

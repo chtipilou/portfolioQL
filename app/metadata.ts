@@ -4,9 +4,9 @@ export const SITE_URL = 'https://chtipilou.github.io/portfolioQL';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: 'Quentin Leroy — Développeur & Cybersécurité',
+  title: 'Quentin Leroy, cybersécurité',
   description:
-    "Portfolio de Quentin Leroy, développeur d'applications métier en alternance chez Groupe Atlantic, spécialisé en sécurité offensive et administration système.",
+    "Portfolio de Quentin Leroy. Chercheur en sécurité, développeur d'applications métier et administration systèmes.",
   keywords: [
     'Quentin Leroy', 'Portfolio', 'Cybersécurité', 'Pentest', 'SysOps',
     'Laravel', 'Filament', 'Next.js', 'Python', 'Alternance',
@@ -17,9 +17,9 @@ export const metadata: Metadata = {
     type: 'profile',
     locale: 'fr_FR',
     url: SITE_URL,
-    title: 'Quentin Leroy — Développeur & Cybersécurité',
+    title: 'Quentin Leroy, cybersécurité',
     description:
-      "Applications métier livrées en alternance et outils de sécurité développés en autonomie.",
+      "Applications métier livrées en entreprise et outils de sécurité développés en autonomie.",
   },
   robots: { index: true, follow: true },
 };

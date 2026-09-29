@@ -15,7 +15,7 @@ const SimpleContactForm: React.FC = () => {
   const [formStatus, setFormStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
   // L'export statique n'embarque aucune route API : le formulaire bascule alors
-  // sur un lien mailto. On se fie au drapeau de build, pas au nom d'hôte — sinon
+  // sur un lien mailto. On se fie au drapeau de build, pas au nom d'hôte, sinon
   // le POST partirait dans le vide derrière un domaine personnalisé.
   const basePath = process.env.NEXT_PUBLIC_BASE_PATH?.trim() ?? '';
   const isStaticExport = basePath !== '';

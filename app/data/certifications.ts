@@ -41,7 +41,7 @@ export const certifications: Certification[] = [
   },
   {
     id: 'pix',
-    title: 'PIX — Compétences numériques',
+    title: 'PIX, compétences numériques',
     issuer: 'État français',
     badge: 'Certifié',
     description: 'Certification des compétences numériques reconnue par l’État français.',
@@ -51,17 +51,17 @@ export const certifications: Certification[] = [
   },
   {
     id: 'cnil',
-    title: 'CNIL — Protection des données',
+    title: 'CNIL, protection des données',
     issuer: 'Commission Nationale de l’Informatique et des Libertés',
     badge: 'Certifié',
     description:
       'Formation sur la protection des données personnelles et le respect du RGPD, en cinq modules.',
     proofs: [
-      { label: 'Module 1 — Introduction au RGPD', url: '/assets/certif-proof/cnil/Module1.pdf', type: 'pdf' },
-      { label: 'Module 2 — Principes du RGPD', url: '/assets/certif-proof/cnil/Module2.pdf', type: 'pdf' },
-      { label: 'Module 3 — Responsabilités', url: '/assets/certif-proof/cnil/Module3.pdf', type: 'pdf' },
-      { label: 'Module 4 — Droits des personnes', url: '/assets/certif-proof/cnil/Module4.pdf', type: 'pdf' },
-      { label: 'Module 5 — Sécurité des données', url: '/assets/certif-proof/cnil/Module5.pdf', type: 'pdf' },
+      { label: 'Module 1 : Introduction au RGPD', url: '/assets/certif-proof/cnil/Module1.pdf', type: 'pdf' },
+      { label: 'Module 2 : Principes du RGPD', url: '/assets/certif-proof/cnil/Module2.pdf', type: 'pdf' },
+      { label: 'Module 3 : Responsabilités', url: '/assets/certif-proof/cnil/Module3.pdf', type: 'pdf' },
+      { label: 'Module 4 : Droits des personnes', url: '/assets/certif-proof/cnil/Module4.pdf', type: 'pdf' },
+      { label: 'Module 5 : Sécurité des données', url: '/assets/certif-proof/cnil/Module5.pdf', type: 'pdf' },
     ],
   },
 ];
