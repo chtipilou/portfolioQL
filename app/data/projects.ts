@@ -39,12 +39,11 @@ export const projects: Project[] = [
     tagline: 'Scanner de vulnérabilités web',
     context: 'Projet personnel',
     description:
-      "Plateforme d'audit offensif que j'ai développée de bout en bout : moteur de reconnaissance, scanner de vulnérabilités et console temps réel. Les scans tournent sur des processus séparés pilotés par un orchestrateur, et les résultats remontent en direct dans l'interface par WebSocket.",
+      "Plateforme d'audit offensif développée de bout en bout : reconnaissance, scan de vulnérabilités et console temps réel.",
     highlights: [
-      'Détection des injections, contrôles d’accès cassés, SSRF, SSTI, GraphQL et fuites de secrets',
+      'Injections, contrôles d’accès, SSRF, SSTI, GraphQL, fuites de secrets',
       'Contournement de WAF par impersonation TLS, sans navigateur',
-      'Chaque résultat est trié en « à soumettre », « à vérifier » ou « bruit »',
-      'Explication en français de chaque faille : ce que c’est, pourquoi ça compte, comment la confirmer',
+      'Chaque résultat trié et expliqué en français',
     ],
     tags: [
       { label: 'Python', tone: 'blue' },
@@ -74,13 +73,11 @@ export const projects: Project[] = [
     tagline: 'Extension navigateur de détection de fichiers exposés',
     context: 'Projet personnel, fork de DotGit',
     description:
-      "Extension Chrome et Firefox qui teste en arrière-plan chaque site visité pour repérer les fichiers laissés accessibles par erreur : dépôt .git, .env, .htaccess, sauvegardes, configuration WordPress. Une alerte remonte dès qu’un fichier est trouvé, et le popup tient la liste des sites exposés.",
+      "Extension Chrome et Firefox qui teste en arrière-plan chaque site visité pour repérer les fichiers laissés accessibles par erreur : dépôt .git, .env, sauvegardes, configuration.",
     highlights: [
       'Analyse passive de chaque site visité, sans action de l’utilisateur',
-      'Liste des chemins sondés entièrement éditable, pas seulement .git et .env',
-      'Profils d’analyse pour basculer d’un jeu de règles à un autre',
-      'Cache des sites déjà analysés pour éviter de les re-sonder',
-      'Analyse groupée d’une liste de domaines, et sondeur d’endpoints intégré',
+      'Chemins sondés et profils d’analyse entièrement éditables',
+      'Analyse groupée d’une liste de domaines, sondeur d’endpoints intégré',
     ],
     tags: [
       { label: 'Extension MV3', tone: 'orange' },
@@ -110,12 +107,11 @@ export const projects: Project[] = [
     tagline: 'Suivi de production industrielle',
     context: 'Alternance, Groupe Atlantic YGNIS',
     description:
-      "Application de suivi du TRS (Taux de Rendement Synthétique) des lignes de production du site de Cauroir. Elle remplace les anciens classeurs Excel et VBA par une saisie temps réel au poste, des écrans TV en atelier et un panel d'administration complet. Mise en production après plusieurs cycles de retours avec les utilisateurs référents.",
+      "Suivi du Taux de Rendement Synthétique des lignes de production. Remplace les anciens classeurs Excel et VBA par une saisie au poste, des écrans TV en atelier et un back-office.",
     highlights: [
-      'Déclarations de production, aléas et défauts saisies directement au poste',
+      'Déclarations de production, aléas et défauts saisies au poste',
       'Écrans TV temps réel par secteur et multi-secteurs',
       'Widgets KPI configurables par formule, sans redéploiement',
-      'API de lecture pour les outils tiers',
     ],
     tags: [
       { label: 'Laravel', tone: 'red' },
@@ -124,20 +120,18 @@ export const projects: Project[] = [
       { label: 'SQL Server', tone: 'slate' },
     ],
     dir: 'trsweb',
-    cover: '02-poste-production',
+    cover: '01-ecran-tv',
     shots: [
-      { slug: '01-connexion', title: 'Connexion' },
-      { slug: '02-poste-production', title: 'Poste de production, secteur Four' },
-      { slug: '03-produit-scanne', title: 'Produit scanné et étapes de déclaration' },
-      { slug: '04-declarations', title: 'Déclarations en cours' },
-      { slug: '05-dernieres-productions', title: 'Dernières productions avec écarts' },
-      { slug: '06-courbe-cadence', title: 'Cadence réelle face à la cadence nécessaire' },
-      { slug: '07-defauts', title: 'Répartition des défauts par type' },
-      { slug: '08-aleas', title: 'Derniers aléas et temps d’arrêt' },
-      { slug: '09-kpi-widgets-tv', title: 'Widgets KPI configurables' },
-      { slug: '10-seuils-ip', title: 'Seuils d’indice de productivité par secteur' },
-      { slug: '11-admin-enregistrement', title: 'Administration, enregistrement TRS' },
-      { slug: '12-admin-utilisateur', title: 'Administration, utilisateurs et rôles' },
+      { slug: '01-ecran-tv', title: 'Écran TV temps réel, vue multi-secteurs' },
+      { slug: '02-tableau-de-bord', title: 'Tableau de bord, pilotage et monitoring' },
+      { slug: '03-poste-production', title: 'Poste de production, secteur Four' },
+      { slug: '04-produit-scanne', title: 'Produit scanné et étapes de déclaration' },
+      { slug: '05-declarations', title: 'Déclaration au poste' },
+      { slug: '06-kpi-widgets', title: 'Widgets KPI configurables par formule' },
+      { slug: '07-seuils-ip', title: 'Seuils d’indice de productivité par secteur' },
+      { slug: '08-admin-enregistrement', title: 'Administration, enregistrement TRS' },
+      { slug: '09-admin-utilisateur', title: 'Administration, utilisateurs et rôles' },
+      { slug: '10-connexion', title: 'Connexion' },
     ],
     links: [
       { label: 'Dépôt (privé)', href: 'https://github.com/Groupe-Atlantic/TRS_WEB', kind: 'github' },
@@ -149,12 +143,11 @@ export const projects: Project[] = [
     tagline: 'Réapprovisionnement bord de ligne',
     context: 'Alternance, Groupe Atlantic YGNIS',
     description:
-      "Refonte complète d'AKAO, l'application de réapprovisionnement interne, portée depuis WinDev vers le web. Les opérateurs déclarent besoins et ruptures depuis une interface mobile pensée pour le scan code-barres ; l'encadrement suit le palettier, les livraisons et les alertes côté bureau. Déployée en production sur IIS.",
+      "Réapprovisionnement bord de ligne porté de WinDev vers le web. Les opérateurs déclarent besoins et ruptures au scan, l'encadrement suit palettier et livraisons.",
     highlights: [
       'Interface mobile terrain avec douchette, et back-office sur poste',
       'Fonctionne sans accès Internet, aucune dépendance externe',
-      'Gestion des besoins, ruptures, listes à servir, palettier et alertes',
-      'Schéma de base versionné par scripts rejouables',
+      'Besoins, ruptures, listes à servir, palettier et alertes',
     ],
     tags: [
       { label: 'Laravel', tone: 'red' },
@@ -163,22 +156,19 @@ export const projects: Project[] = [
       { label: 'SQL Server', tone: 'slate' },
     ],
     dir: 'akaoweb',
-    cover: '11-gap-equipement',
+    cover: '01-menu-appro',
     shots: [
-      { slug: '01-connexion-badge', title: 'Connexion par badge' },
+      { slug: '01-menu-appro', title: 'Menu approvisionnement' },
       { slug: '02-tableau-de-bord', title: 'Tableau de bord opérateur' },
-      { slug: '03-menu-gap', title: 'Sélection du GAP' },
+      { slug: '03-menu-gap', title: 'Sélection du GAP et de la tournée' },
       { slug: '04-scan-article', title: 'Scan article et panier' },
-      { slug: '05-commande-urgente', title: 'Commande urgente sur rupture' },
-      { slug: '06-liste-a-servir', title: 'Liste à servir depuis un produit fini' },
-      { slug: '07-fiche-produit', title: 'Fiche produit et alerte de rupture' },
-      { slug: '08-besoins', title: 'Besoins actifs' },
-      { slug: '09-ruptures', title: 'Ruptures déclarées' },
-      { slug: '10-recap-livraisons', title: 'Récapitulatif des livraisons' },
-      { slug: '11-gap-equipement', title: 'Vue GAP équipement' },
-      { slug: '12-palettier', title: 'Palettier et occupation des emplacements' },
-      { slug: '13-configuration', title: 'Configuration applicative' },
-      { slug: '14-roles', title: 'Rôles et permissions' },
+      { slug: '05-liste-a-servir', title: 'Liste à servir depuis un produit fini' },
+      { slug: '06-zones-depose', title: 'Zones de dépose' },
+      { slug: '07-gaps', title: 'Référentiel des GAP' },
+      { slug: '08-configuration', title: 'Configuration applicative' },
+      { slug: '09-roles', title: 'Rôles et permissions' },
+      { slug: '10-profil', title: 'Profil utilisateur' },
+      { slug: '11-connexion-badge', title: 'Connexion par badge' },
     ],
     links: [
       { label: 'Dépôt (privé)', href: 'https://github.com/Groupe-Atlantic/AKAO_WEB', kind: 'github' },
@@ -190,7 +180,7 @@ export const projects: Project[] = [
     tagline: 'Plateforme d’analyse web',
     context: 'Projet personnel',
     description:
-      "Plateforme permettant de lancer des tests de sécurité et de la reconnaissance sur des applications web, avec comptes utilisateurs, tableau de bord et historique des rapports.",
+      "Tests de sécurité et reconnaissance sur des applications web, avec comptes, tableau de bord et historique des rapports.",
     tags: [
       { label: 'Next.js', tone: 'slate' },
       { label: 'TypeScript', tone: 'blue' },
@@ -214,7 +204,7 @@ export const projects: Project[] = [
     tagline: 'Extranet médical',
     context: 'Projet de formation',
     description:
-      "Application web de gestion pour laboratoire pharmaceutique : visites, visioconférences et produits, avec authentification à deux facteurs, module de maintenance et journalisation des opérations.",
+      "Gestion pour laboratoire pharmaceutique : visites, visioconférences et produits, avec double authentification et journalisation.",
     tags: [
       { label: 'PHP', tone: 'purple' },
       { label: 'CRUD', tone: 'blue' },
@@ -237,7 +227,7 @@ export const projects: Project[] = [
     tagline: 'Partage de fichiers',
     context: 'Projet de formation',
     description:
-      "Application de dépôt et de gestion de fichiers par glisser-déposer, avec catégories, comptes utilisateurs et interface d'administration pour consulter et modifier les fichiers envoyés.",
+      "Dépôt et gestion de fichiers par glisser-déposer, avec catégories, comptes et interface d'administration.",
     tags: [
       { label: 'Symfony', tone: 'green' },
       { label: 'PHP', tone: 'purple' },
