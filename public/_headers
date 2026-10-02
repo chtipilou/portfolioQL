@@ -1,10 +1,14 @@
+# Ignore par GitHub Pages, qui ne permet pas de definir d'en-tetes : le CSP
+# actif est celui pose en <meta> dans app/layout.tsx. Ce fichier ne sert que
+# si le site part un jour sur Netlify ou Cloudflare Pages. Garder les deux
+# politiques alignees ; celle-ci ajoute frame-ancestors, impossible en meta.
 /*
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   X-XSS-Protection: 1; mode=block
   Referrer-Policy: no-referrer-when-downgrade
   Cache-Control: public, max-age=31536000
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https:; font-src 'self' data:;
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.workers.dev; font-src 'self'; object-src 'self'; connect-src 'self' https://*.workers.dev; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
 
 # Ressources statiques
 /_next/static/*
