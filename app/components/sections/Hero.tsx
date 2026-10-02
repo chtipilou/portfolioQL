@@ -12,11 +12,7 @@ export default function Hero() {
   return (
     <section id="accueil" className="mb-24 flex min-h-[85vh] flex-col justify-center py-12">
       <div className="animate-fade-in text-center">
-        <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-1.5 text-sm font-medium text-blue-700 dark:border-blue-500/25 dark:bg-blue-500/10 dark:text-blue-300">
-          <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-500 opacity-70" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-blue-500" />
-          </span>
+        <p className="mb-5 inline-flex items-center rounded-full border border-blue-200 bg-blue-50 px-4 py-1.5 text-sm font-medium text-blue-700 dark:border-blue-500/25 dark:bg-blue-500/10 dark:text-blue-300">
           Ouvert aux opportunités en cybersécurité
         </p>
 
@@ -29,10 +25,10 @@ export default function Hero() {
         </p>
 
         <p className="mx-auto mb-6 max-w-2xl text-base leading-relaxed text-gray-600 dark:text-gray-300 sm:text-lg">
-          Je m&apos;appuie sur un socle en développement et en administration systèmes pour
-          comprendre les applications et les infrastructures que je teste. Chercheur en sécurité
-          indépendant, je repère des failles web en bug bounty et je rédige des rapports
-          directement exploitables.
+          Développeur et administrateur systèmes de formation, je connais de l&apos;intérieur les
+          applications et les infrastructures que j&apos;audite aujourd&apos;hui. Je chasse des
+          vulnérabilités web en bug bounty, en indépendant, et je livre des rapports que les
+          équipes peuvent corriger directement.
         </p>
 
         <p className="mb-8 flex items-center justify-center gap-2 text-gray-500 dark:text-gray-400">

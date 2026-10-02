@@ -27,6 +27,13 @@ export const profiles: Profile[] = [
     tone: 'text-[#4b5cf5] dark:text-indigo-300',
   },
   {
+    id: 'cantina',
+    label: 'Cantina',
+    handle: 'tchoupilou',
+    href: 'https://cantina.xyz/u/tchoupilou',
+    tone: 'text-amber-600 dark:text-amber-400',
+  },
+  {
     id: 'rootme',
     label: 'Root-Me',
     handle: 'nochtipilou',
