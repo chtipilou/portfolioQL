@@ -15,7 +15,7 @@ export default function NotFound() {
           href="/"
           className="btn bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-500/20 px-6 py-3 text-lg font-medium rounded-xl"
         >
-          Retour à l'accueil
+          Retour à l&apos;accueil
         </Link>
       </div>
     </div>

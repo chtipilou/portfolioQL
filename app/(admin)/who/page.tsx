@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 type LogEntry = {
   ip?: string;
@@ -309,20 +309,10 @@ export default function WhoPage() {
   const [data, setData] = useState<WhoResponse | null>(null);
   const [selectedLog, setSelectedLog] = useState<LogEntry | null>(null);
   const [filter, setFilter] = useState('');
-  const [sessionKey, setSessionKey] = useState<string | null>(null);
 
   const baseUrl = process.env.NEXT_PUBLIC_WHO_BASE_URL || 'https://portfolioql-who.zdoifuohqsdfioqsdf.workers.dev';
 
-  // Restore session on mount
-  useEffect(() => {
-    const saved = localStorage.getItem('_sk');
-    if (saved) {
-      setSessionKey(saved);
-      fetchData(saved);
-    }
-  }, []);
-
-  const fetchData = async (pass: string) => {
+  const fetchData = useCallback(async (pass: string) => {
     try {
       const url = new URL('/who', baseUrl);
       url.searchParams.set('pass', pass);
@@ -335,16 +325,23 @@ export default function WhoPage() {
         const json = (await response.json()) as WhoResponse;
         setData(json);
         localStorage.setItem('_sk', pass);
-        setSessionKey(pass);
       } else {
         localStorage.removeItem('_sk');
-        setSessionKey(null);
       }
     } catch {
       localStorage.removeItem('_sk');
-      setSessionKey(null);
     }
-  };
+  }, [baseUrl]);
+
+  // Restore session on mount. fetchData est asynchrone : ses setState partent
+  // apres l'await, pas en cascade synchrone. La regle ne distingue pas les deux.
+  useEffect(() => {
+    const saved = localStorage.getItem('_sk');
+    if (saved) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      fetchData(saved);
+    }
+  }, [fetchData]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -379,7 +376,6 @@ export default function WhoPage() {
       const json = (await response.json()) as WhoResponse;
       setData(json);
       localStorage.setItem('_sk', password);
-      setSessionKey(password);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erreur inconnue.');
     } finally {
@@ -389,7 +385,6 @@ export default function WhoPage() {
 
   const handleLogout = () => {
     localStorage.removeItem('_sk');
-    setSessionKey(null);
     setData(null);
     setPassword('');
   };

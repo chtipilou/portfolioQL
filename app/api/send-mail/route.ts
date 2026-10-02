@@ -78,7 +78,7 @@ export async function POST(req: Request) {
     const realIp = headersList.get('x-real-ip');
     const cfConnectingIp = headersList.get('cf-connecting-ip');
     
-    let ip = forwardedFor?.split(',')[0].trim() || 
+    const ip = forwardedFor?.split(',')[0].trim() || 
              realIp || 
              cfConnectingIp || 
              'unknown';

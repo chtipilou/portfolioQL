@@ -83,7 +83,7 @@ export default function Hero() {
         </div>
 
         {/* Profils de recherche en sécurité */}
-        <div className="mx-auto max-w-2xl">
+        <div className="mx-auto max-w-4xl">
           <p className="mb-3 text-xs font-medium uppercase tracking-wider text-gray-400 dark:text-gray-500">
             Recherche en sécurité
           </p>

@@ -35,8 +35,8 @@ export const certifications: Certification[] = [
     proofs: [
       { label: 'Certification Root-Me 1', url: '/assets/certif-proof/root-me/Root-ME1.pdf', type: 'pdf' },
       { label: 'Certification Root-Me 2', url: '/assets/certif-proof/root-me/Root-ME2.pdf', type: 'pdf' },
-      { label: 'Classement points global', url: '/assets/certif-proof/root-me/root-meClassGlobal.png', type: 'image' },
-      { label: 'Classement CertaPro', url: '/assets/certif-proof/root-me/root-meClassCerta.png', type: 'image' },
+      { label: 'Classement points global', url: '/assets/certif-proof/root-me/root-meClassGlobal.webp', type: 'image' },
+      { label: 'Classement CertaPro', url: '/assets/certif-proof/root-me/root-meClassCerta.webp', type: 'image' },
     ],
   },
   {

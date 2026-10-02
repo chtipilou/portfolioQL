@@ -341,7 +341,7 @@ const handleWho = async (request: Request, env: Env) => {
   });
 };
 
-export default {
+const worker = {
   async fetch(request: Request, env: Env) {
     const url = new URL(request.url);
     const origin = request.headers.get('Origin');
@@ -382,3 +382,5 @@ export default {
     });
   },
 };
+
+export default worker;
