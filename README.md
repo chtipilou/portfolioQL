@@ -15,13 +15,17 @@ npm run dev          # http://localhost:3000
 ## Build
 
 ```bash
-npm run build                    # build dynamique (routes API actives)
-STATIC_EXPORT=true npm run build # export statique -> out/
+npm run build                    # build local
+STATIC_EXPORT=true npm run build # export statique -> out/, comme la CI
+npm run lint                     # eslint
+npx tsc --noEmit                 # verification de types
 ```
 
-L'export statique ne supporte pas les routes API : la CI supprime `app/api/`
-avant de builder (voir `.github/workflows/deploy.yml`). Le formulaire de contact
-bascule automatiquement sur un lien `mailto:` dans ce mode.
+Le site est entierement statique : aucune route API, aucun middleware. La CI
+lance `lint` et `tsc` avant le build (voir `.github/workflows/deploy.yml`).
+
+`robots.ts` et `sitemap.ts` sont generes au build et exigent
+`export const dynamic = 'force-static'`, sans quoi `output: 'export'` echoue.
 
 ## Structure
 
@@ -29,7 +33,7 @@ bascule automatiquement sur un lien `mailto:` dans ce mode.
 app/
   (main)/page.tsx          Composition des sections
   (admin)/who              Page privée de consultation des visites
-  api/                     Routes API (build dynamique uniquement)
+  robots.ts, sitemap.ts    Generes au build
   components/
     sections/              Hero, Projects, Skills, Certifications, Timeline
     Gallery.tsx            Visionneuse plein écran (portal + chargement paresseux)
@@ -52,6 +56,21 @@ en éditant ces fichiers, sans toucher au JSX.
 
 `cover` permet de choisir la vignette de la carte quand la première capture
 cadre mal en bandeau.
+
+## En-tetes de securite
+
+GitHub Pages ne permet pas de definir d'en-tetes HTTP. La politique de securite
+du contenu est donc posee en `<meta http-equiv>` dans `app/layout.tsx`. Deux
+contraintes a connaitre avant d'y toucher :
+
+- `script-src` tolere `'unsafe-inline'` : Next injecte six scripts inline au
+  demarrage et l'export statique interdit les nonces.
+- `object-src 'self'` et `img-src ... https://*.workers.dev` sont necessaires,
+  le premier pour les preuves de certification rendues en `<object>` PDF, le
+  second pour les replis en pixel image du suivi de visite.
+
+`frame-ancestors` n'est pas interpretable en `<meta>` : la protection
+anti-iframe demanderait un vrai en-tete, hors de portee sur Pages.
 
 ## Chemins d'assets
 
